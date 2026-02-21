@@ -12,9 +12,9 @@ public interface IObserverPartido {
 
 
     /**
-     * @param Partido 
+     * @param partido
      * @return
      */
-    public void update(void Partido);
+    public void update( Partido partido);
 
 }

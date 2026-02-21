@@ -19,20 +19,10 @@ public class Push implements IStrategyNotificador {
 
 
     /**
-     * @param Notificacion 
+     * @param notificacion
      * @return
      */
     public void enviarNotificacion( Notificacion notificacion) {
         // TODO implement here
     }
-
-    /**
-     * @param Notificacion 
-     * @return
-     */
-    public void enviarNotificacion(void Notificacion) {
-        // TODO implement IStrategyNotificador.enviarNotificacion() here
-        return null;
-    }
-
 }

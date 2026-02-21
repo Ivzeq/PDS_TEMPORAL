@@ -37,12 +37,11 @@ public class BuscadorPartidos {
     }
 
     /**
-     * @param IStrategyBuscadorPartidos 
+     * @param strategy
      * @return
      */
-    public void cambiarStrategy(void IStrategyBuscadorPartidos) {
+    public void cambiarStrategy(IStrategyBuscadorPartidos strategy) {
         // TODO implement here
-        return null;
     }
 
 }

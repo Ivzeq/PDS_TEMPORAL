@@ -16,21 +16,11 @@ public class JavaMail implements IAdapterJavaMail {
 
 
     /**
-     * @param Notificacion 
+     * @param notificacion
      * @return
      */
-    public void enviarNotificacion(void Notificacion) {
+    public void enviarNotificacion(Notificacion notificacion) {
         // TODO implement here
-        return null;
-    }
-
-    /**
-     * @param Notificacion 
-     * @return
-     */
-    public void enviarNotificacion(void Notificacion) {
-        // TODO implement IAdapterJavaMail.enviarNotificacion() here
-        return null;
     }
 
 }

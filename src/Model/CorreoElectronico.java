@@ -17,12 +17,11 @@ public class CorreoElectronico {
 
 
     /**
-     * @param Notificacion 
+     * @param notificacion
      * @return
      */
-    public void enviarNotificacion(void Notificacion) {
+    public void enviarNotificacion(Notificacion notificacion) {
         // TODO implement here
-        return null;
     }
 
 }

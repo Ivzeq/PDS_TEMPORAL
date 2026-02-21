@@ -21,7 +21,6 @@ public class Avanzado extends AbstractNivelDeporte {
      */
     public void bajarNivel() {
         // TODO implement here
-        return null;
     }
 
 }

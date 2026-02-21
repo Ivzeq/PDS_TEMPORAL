@@ -20,7 +20,6 @@ public class Cancelado implements IEstadoPartido {
      */
     public void avanzarEstado() {
         // TODO implement IEstadoPartido.avanzarEstado() here
-        return null;
     }
 
 }

@@ -10,10 +10,10 @@ public interface IAdapterJavaMail {
 
 
 
+
     /**
-     * @param Notificacion 
+     * @param notificacion
      * @return
      */
-    public void enviarNotificacion(void Notificacion);
-
+    public void enviarNotificacion(Notificacion notificacion);
 }

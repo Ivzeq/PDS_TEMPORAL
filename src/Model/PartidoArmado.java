@@ -20,15 +20,6 @@ public class PartidoArmado implements IEstadoPartido {
      */
     public void avanzarEstado() {
         // TODO implement here
-        return null;
-    }
-
-    /**
-     * @return
-     */
-    public void avanzarEstado() {
-        // TODO implement IEstadoPartido.avanzarEstado() here
-        return null;
     }
 
 }

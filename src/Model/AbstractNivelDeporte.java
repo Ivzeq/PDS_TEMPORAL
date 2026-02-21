@@ -27,7 +27,6 @@ public class AbstractNivelDeporte {
      */
     public void subirNivel() {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -35,7 +34,6 @@ public class AbstractNivelDeporte {
      */
     public void bajarNivel() {
         // TODO implement here
-        return null;
     }
 
 }
