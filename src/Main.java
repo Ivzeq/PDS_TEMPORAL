@@ -1,7 +1,18 @@
 import Model.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 public class Main {
         public static void main(String[] args) {
+
+                Properties config = new Properties();
+                try (FileInputStream fis = new FileInputStream("config.properties")) {
+                        config.load(fis);
+                } catch (IOException e) {
+                        System.err.println("No se encontro config.properties. Los emails no se enviaran.");
+                }
 
                 System.out.println("=== 1. Registro de Jugadores ===\n");
 
@@ -105,9 +116,13 @@ public class Main {
 
                 System.out.println("\n=== 7. Strategy + Adapter: Notificaciones Email (JavaMail) ===\n");
 
+                String smtpHost = config.getProperty("mail.smtp.host", "smtp.gmail.com");
+                int smtpPort = Integer.parseInt(config.getProperty("mail.smtp.port", "587"));
+                String remitente = config.getProperty("mail.remitente", "");
+                String mailPassword = config.getProperty("mail.password", "");
+
                 IAdapterJavaMail adapterJavaMail = new JavaMail(
-                                "smtp.gmail.com", 587,
-                                "shinfin12@gmail.com", "ruih pjwx wgob lbye");
+                                smtpHost, smtpPort, remitente, mailPassword);
                 IStrategyNotificador strategyMail = new CorreoElectronico(adapterJavaMail);
                 Notificador notificadorMail = new Notificador(strategyMail);
 
