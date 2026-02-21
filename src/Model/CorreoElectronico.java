@@ -1,27 +1,15 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+public class CorreoElectronico implements IStrategyNotificador {
 
-/**
- * 
- */
-public class CorreoElectronico {
+    private IAdapterJavaMail adapterJavaMail;
 
-    /**
-     * Default constructor
-     */
-    public CorreoElectronico() {
+    public CorreoElectronico(IAdapterJavaMail adapterJavaMail) {
+        this.adapterJavaMail = adapterJavaMail;
     }
 
-
-
-    /**
-     * @param notificacion
-     * @return
-     */
+    @Override
     public void enviarNotificacion(Notificacion notificacion) {
-        // TODO implement here
+        adapterJavaMail.enviarNotificacion(notificacion);
     }
-
 }

@@ -1,52 +1,38 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
-/**
- * 
- */
 public class Notificador implements IObserverPartido {
 
-    /**
-     * Default constructor
-     */
-    public Notificador() {
-    }
-
-    /**
-     * 
-     */
     private IStrategyNotificador strategy;
 
+    public Notificador(IStrategyNotificador strategy) {
+        this.strategy = strategy;
+    }
 
-
-
-
-
-
-    /**
-     * @param notificacion
-     * @return
-     */
     public void enviarNotificacion(Notificacion notificacion) {
-        // TODO implement here
+        strategy.enviarNotificacion(notificacion);
     }
 
-    /**
-     * @param strategy
-     * @return
-     */
     public void cambiarStrategy(IStrategyNotificador strategy) {
-        // TODO implement here
+        this.strategy = strategy;
     }
 
-    /**
-     * @param partido
-     * @return
-     */
+    public IStrategyNotificador getStrategy() {
+        return strategy;
+    }
+
+    @Override
     public void update(Partido partido) {
-        // TODO implement IObserverPartido.update() here
-    }
+        List<Jugador> jugadores = partido.getJugadores();
+        String estadoActual = partido.getEstado().toString();
+        String deporte = partido.getDeporte().toString();
 
+        String mensaje = "El partido de " + deporte + " ha cambiado a estado: " + estadoActual;
+
+        for (Jugador jugador : jugadores) {
+            Notificacion notificacion = new Notificacion(mensaje, jugador);
+            enviarNotificacion(notificacion);
+        }
+    }
 }

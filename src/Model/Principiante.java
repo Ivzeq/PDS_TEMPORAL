@@ -1,31 +1,29 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Principiante extends AbstractNivelDeporte {
 
-    /**
-     * Default constructor
-     */
-    public Principiante() {
+    private int maxPartidos;
+
+    public Principiante(Jugador jugador) {
+        super(jugador);
+        this.maxPartidos = 10;
     }
 
-    /**
-     * 
-     */
-    public int maxPartidos;
+    public Principiante(Jugador jugador, int maxPartidos) {
+        super(jugador);
+        this.maxPartidos = maxPartidos;
+    }
 
-
-
-    /**
-     * @return
-     */
+    @Override
     public void subirNivel() {
-        // TODO implement here
+        jugador.setNivelDeporteFavorito(new Intermedio(jugador));
     }
 
+    public int getMaxPartidos() {
+        return maxPartidos;
+    }
+
+    public void setMaxPartidos(int maxPartidos) {
+        this.maxPartidos = maxPartidos;
+    }
 }

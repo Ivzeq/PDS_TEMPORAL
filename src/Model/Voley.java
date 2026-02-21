@@ -1,29 +1,12 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Voley extends AbstractDeporte {
 
-    /**
-     * Default constructor
-     */
     public Voley() {
+        super(60, 12);
     }
 
-    /**
-     * 
-     */
-    public int duracionPartido;
-
-    /**
-     * 
-     */
-    private int cantidadJugadores;
-
-
-
+    public Voley(int duracionPartido, int cantidadJugadores) {
+        super(duracionPartido, cantidadJugadores);
+    }
 }

@@ -1,29 +1,12 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Basquet extends AbstractDeporte {
 
-    /**
-     * Default constructor
-     */
     public Basquet() {
+        super(48, 10);
     }
 
-    /**
-     * 
-     */
-    private int duracionPartido;
-
-    /**
-     * 
-     */
-    private int cantidadJugadores;
-
-
-
+    public Basquet(int duracionPartido, int cantidadJugadores) {
+        super(duracionPartido, cantidadJugadores);
+    }
 }

@@ -1,36 +1,36 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Notificacion {
 
-    /**
-     * Default constructor
-     */
-    public Notificacion() {
-    }
-
-    /**
-     * 
-     */
     private String mensaje;
-
-    /**
-     * 
-     */
     private Jugador destinatario;
 
-
-
-    /**
-     * @return
-     */
-    public void enviarNotificacion() {
-        // TODO implement here
+    public Notificacion(String mensaje, Jugador destinatario) {
+        this.mensaje = mensaje;
+        this.destinatario = destinatario;
     }
 
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public Jugador getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(Jugador destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    @Override
+    public String toString() {
+        return "Notificacion{" +
+                "destinatario=" + destinatario.getUsername() +
+                ", mensaje='" + mensaje + '\'' +
+                '}';
+    }
 }

@@ -1,15 +1,155 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import Model.*;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class Main {
+        public static void main(String[] args) {
+
+                System.out.println("=== 1. Registro de Jugadores ===\n");
+
+                Jugador juan = new Jugador("1", "Juan Perez", "juan@mail.com", "juanp", "pass123",
+                                new Futbol(), "1000");
+                Jugador maria = new Jugador("2", "Maria Lopez", "maria@mail.com", "marial", "pass456",
+                                new Basquet(), "2000");
+                Jugador carlos = new Jugador("3", "Carlos Gomez", "carlos@mail.com", "carlosg", "pass789",
+                                new Voley(), "3000");
+                Jugador lucia = new Jugador("4", "Lucia Fernandez", "lucia@mail.com", "luciaf", "pass000",
+                                "4000");
+
+                System.out.println(juan);
+                System.out.println(maria);
+                System.out.println(carlos);
+                System.out.println(lucia);
+
+                System.out.println("\n=== 2. DeporteFavorito ===\n");
+
+                System.out.println("Deporte favorito de Juan: " + juan.getDeporteFavorito());
+                System.out.println("Deporte favorito de Maria: " + maria.getDeporteFavorito());
+                System.out.println("Deporte favorito de Carlos: " + carlos.getDeporteFavorito());
+                System.out.println("Deporte favorito de Lucia (sin asignar): " + lucia.getDeporteFavorito());
+
+                lucia.setDeporteFavorito(new Futbol());
+                System.out.println("Lucia elige Futbol: " + lucia.getDeporteFavorito());
+
+                carlos.setDeporteFavorito(new Basquet());
+                System.out.println("Carlos cambia a Basquet: " + carlos.getDeporteFavorito());
+
+                System.out.println("\nDatos del deporte Futbol:");
+                AbstractDeporte futbol = juan.getDeporteFavorito();
+                System.out.println("  Duracion partido: " + futbol.getDuracionPartido() + " min");
+                System.out.println("  Cantidad jugadores: " + futbol.getCantidadJugadores());
+
+                System.out.println("\n=== 3. State Pattern: Transiciones de NivelDeporte ===\n");
+
+                System.out.println("--- Juan: Principiante -> Intermedio -> Avanzado ---");
+                System.out.println("Nivel inicial: " + juan.getNivelDeporteFavorito());
+
+                juan.getNivelDeporteFavorito().subirNivel();
+                System.out.println("subirNivel() -> " + juan.getNivelDeporteFavorito());
+
+                juan.getNivelDeporteFavorito().subirNivel();
+                System.out.println("subirNivel() -> " + juan.getNivelDeporteFavorito());
+
+                juan.getNivelDeporteFavorito().subirNivel();
+                System.out.println("subirNivel() (ya Avanzado, no-op) -> " + juan.getNivelDeporteFavorito());
+
+                System.out.println("\n--- Juan: Avanzado -> Intermedio -> Principiante ---");
+
+                juan.getNivelDeporteFavorito().bajarNivel();
+                System.out.println("bajarNivel() -> " + juan.getNivelDeporteFavorito());
+
+                juan.getNivelDeporteFavorito().bajarNivel();
+                System.out.println("bajarNivel() -> " + juan.getNivelDeporteFavorito());
+
+                juan.getNivelDeporteFavorito().bajarNivel();
+                System.out.println("bajarNivel() (ya Principiante, no-op) -> " + juan.getNivelDeporteFavorito());
+
+                System.out.println("\n--- Maria: subir un nivel ---");
+                System.out.println("Nivel inicial: " + maria.getNivelDeporteFavorito());
+                maria.getNivelDeporteFavorito().subirNivel();
+                System.out.println("subirNivel() -> " + maria.getNivelDeporteFavorito());
+
+                System.out.println("\n=== 4. confirmarPartido() ===\n");
+
+                System.out.println("Juan - partidos jugados: " + juan.getNPartidos());
+                juan.confirmarPartido();
+                juan.confirmarPartido();
+                juan.confirmarPartido();
+                System.out.println("Juan confirma 3 partidos: " + juan.getNPartidos());
+
+                System.out.println("Maria - partidos jugados: " + maria.getNPartidos());
+                maria.confirmarPartido();
+                System.out.println("Maria confirma 1 partido: " + maria.getNPartidos());
+
+                System.out.println("\n=== 5. Modificar datos del Jugador ===\n");
+
+                System.out.println("Mail de Juan antes: " + juan.getMail());
+                juan.modificarMail("juannuevo@mail.com");
+                System.out.println("Mail de Juan despues: " + juan.getMail());
+
+                System.out.println("Password de Maria antes: " + maria.getPassword());
+                maria.modificarPassword("nuevaPass789");
+                System.out.println("Password de Maria despues: " + maria.getPassword());
+
+                System.out.println("\n=== 6. Strategy + Adapter: Notificaciones Push (Firebase) ===\n");
+
+                IAdapterFirebase adapterFirebase = new Firebase();
+                IStrategyNotificador strategyPush = new Push(adapterFirebase);
+                Notificador notificadorPush = new Notificador(strategyPush);
+
+                Notificacion noti1 = new Notificacion("Nuevo partido de Futbol en tu zona!", juan);
+                Notificacion noti2 = new Notificacion("Nuevo partido de Basquet en tu zona!", maria);
+                Notificacion noti3 = new Notificacion("Tu partido paso a estado: Partido armado", carlos);
+
+                notificadorPush.enviarNotificacion(noti1);
+                notificadorPush.enviarNotificacion(noti2);
+                notificadorPush.enviarNotificacion(noti3);
+
+                System.out.println("\n=== 7. Strategy + Adapter: Notificaciones Email (JavaMail) ===\n");
+
+                IAdapterJavaMail adapterJavaMail = new JavaMail(
+                                "smtp.gmail.com", 587,
+                                "shinfin12@gmail.com", "ruih pjwx wgob lbye");
+                IStrategyNotificador strategyMail = new CorreoElectronico(adapterJavaMail);
+                Notificador notificadorMail = new Notificador(strategyMail);
+
+                Notificacion noti4 = new Notificacion("Nuevo partido de Futbol en tu zona!", juan);
+                Notificacion noti5 = new Notificacion("Tu partido fue confirmado!", maria);
+
+                System.out.println("(Email requiere credenciales SMTP reales para enviar)");
+                notificadorMail.enviarNotificacion(noti4);
+                notificadorMail.enviarNotificacion(noti5);
+
+                System.out.println("\n=== 8. Cambio dinamico de Strategy en runtime ===\n");
+
+                System.out.println("Notificador usa Push:");
+                Notificador notificador = new Notificador(strategyPush);
+                Notificacion noti6 = new Notificacion("Partido confirmado!", lucia);
+                notificador.enviarNotificacion(noti6);
+
+                System.out.println("\nCambiando strategy a Email:");
+                notificador.cambiarStrategy(strategyMail);
+                Notificacion noti7 = new Notificacion("Partido confirmado!", lucia);
+                notificador.enviarNotificacion(noti7);
+
+                System.out.println("\nCambiando strategy de vuelta a Push:");
+                notificador.cambiarStrategy(strategyPush);
+                Notificacion noti8 = new Notificacion("Partido en juego!", lucia);
+                notificador.enviarNotificacion(noti8);
+
+                System.out.println("\n=== 9. Multiples Notificadores (Observer) ===\n");
+
+                Notificador observerPush = new Notificador(strategyPush);
+                Notificador observerMail = new Notificador(strategyMail);
+
+                System.out.println("Enviando a Juan por Push Y Email simultaneamente:");
+                Notificacion notiPush = new Notificacion("Partido cancelado", juan);
+                Notificacion notiMail = new Notificacion("Partido cancelado", juan);
+                observerPush.enviarNotificacion(notiPush);
+                observerMail.enviarNotificacion(notiMail);
+
+                System.out.println("\n=== Resumen Final ===\n");
+                System.out.println(juan);
+                System.out.println(maria);
+                System.out.println(carlos);
+                System.out.println(lucia);
         }
-    }
 }
