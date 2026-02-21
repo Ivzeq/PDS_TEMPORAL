@@ -1,29 +1,12 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Futbol extends AbstractDeporte {
 
-    /**
-     * Default constructor
-     */
     public Futbol() {
+        super(60, 10);
     }
 
-    /**
-     * 
-     */
-    private int duracionPartido;
-
-    /**
-     * 
-     */
-    private int cantidadJugadores;
-
-
-
+    public Futbol(int duracionPartido, int cantidadJugadores) {
+        super(duracionPartido, cantidadJugadores);
+    }
 }

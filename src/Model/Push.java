@@ -1,28 +1,15 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Push implements IStrategyNotificador {
 
-    /**
-     * Default constructor
-     */
-    public Push() {
+    private IAdapterFirebase adapterFirebase;
+
+    public Push(IAdapterFirebase adapterFirebase) {
+        this.adapterFirebase = adapterFirebase;
     }
 
-
-
-
-
-    /**
-     * @param notificacion
-     * @return
-     */
-    public void enviarNotificacion( Notificacion notificacion) {
-        // TODO implement here
+    @Override
+    public void enviarNotificacion(Notificacion notificacion) {
+        adapterFirebase.enviarNotificacion(notificacion);
     }
 }

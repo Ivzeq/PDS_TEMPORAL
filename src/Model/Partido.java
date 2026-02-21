@@ -1,101 +1,78 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-/**
- * 
- */
 public class Partido {
 
-    /**
-     * Default constructor
-     */
-    public Partido() {
-    }
-
-    /**
-     * 
-     */
     private AbstractDeporte deporte;
-
-    /**
-     * 
-     */
     private int nJugadores;
-
-    /**
-     * 
-     */
     private AbstractNivelDeporte nivelJugadores;
-
-    /**
-     * 
-     */
     private int duracion;
-
-    /**
-     * 
-     */
     private String ubicacion;
-
-    /**
-     * 
-     */
     private Date horario;
-
-    /**
-     * 
-     */
-    private EstadoPartido estado;
-
-    /**
-     * 
-     */
+    private IEstadoPartido estado;
     private List<Jugador> jugadores;
-
-    /**
-     * 
-     */
     private Jugador organizador;
-
-    /**
-     * 
-     */
     private List<IObserverPartido> observers;
 
+    public Partido() {
+        this.jugadores = new ArrayList<>();
+        this.observers = new ArrayList<>();
+    }
 
-
-
-
-
-
-
-
-
-
-
-    /**
-     * @return
-     */
     public void avanzarEstado() {
         // TODO implement here
     }
 
-    /**
-     * @param jugador
-     * @return
-     */
-    public void agregarJugador( Jugador jugador) {
+    public void agregarJugador(Jugador jugador) {
         // TODO implement here
     }
 
-    /**
-     * @param jugador
-     * @return
-     */
-    public void removerJugador( Jugador jugador) {
+    public void removerJugador(Jugador jugador) {
         // TODO implement here
     }
 
+    // Getters needed by notification system
+
+    public AbstractDeporte getDeporte() {
+        return deporte;
+    }
+
+    public IEstadoPartido getEstado() {
+        return estado;
+    }
+
+    public List<Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    public Jugador getOrganizador() {
+        return organizador;
+    }
+
+    public List<IObserverPartido> getObservers() {
+        return observers;
+    }
+
+    public int getNJugadores() {
+        return nJugadores;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public Date getHorario() {
+        return horario;
+    }
+
+    public int getDuracion() {
+        return duracion;
+    }
+
+    public AbstractNivelDeporte getNivelJugadores() {
+        return nivelJugadores;
+    }
 }

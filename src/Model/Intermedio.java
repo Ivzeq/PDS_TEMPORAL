@@ -1,33 +1,18 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Intermedio extends AbstractNivelDeporte {
 
-    /**
-     * Default constructor
-     */
-    public Intermedio() {
+    public Intermedio(Jugador jugador) {
+        super(jugador);
     }
 
-
-
-    /**
-     * @return
-     */
+    @Override
     public void subirNivel() {
-        // TODO implement here
+        jugador.setNivelDeporteFavorito(new Avanzado(jugador));
     }
 
-    /**
-     * @return
-     */
+    @Override
     public void bajarNivel() {
-        // TODO implement here
+        jugador.setNivelDeporteFavorito(new Principiante(jugador));
     }
-
 }

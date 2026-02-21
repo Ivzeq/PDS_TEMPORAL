@@ -1,39 +1,29 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+public abstract class AbstractNivelDeporte {
 
-/**
- * 
- */
-public class AbstractNivelDeporte {
+    protected Jugador jugador;
 
-    /**
-     * Default constructor
-     */
-    public AbstractNivelDeporte() {
+    public AbstractNivelDeporte(Jugador jugador) {
+        this.jugador = jugador;
     }
 
-
-
-
-
-
-
-
-
-    /**
-     * @return
-     */
     public void subirNivel() {
-        // TODO implement here
     }
 
-    /**
-     * @return
-     */
     public void bajarNivel() {
-        // TODO implement here
     }
 
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }
