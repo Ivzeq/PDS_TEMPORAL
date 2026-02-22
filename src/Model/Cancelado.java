@@ -9,4 +9,9 @@ public class Cancelado implements IEstadoPartido {
     public void avanzarEstado(Partido partido) {
         partido.setEstado(new Cancelado());
     }
+
+    @Override
+    public void cancelarPartido(Partido partido) {
+        partido.setEstado(new Cancelado());
+    }
 }
