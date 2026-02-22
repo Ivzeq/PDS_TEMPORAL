@@ -1,47 +1,36 @@
 package Model;
 
-import java.io.*;
 import java.util.*;
 
-/**
- * 
- */
 public class BuscadorPartidos {
 
-    /**
-     * Default constructor
-     */
-    public BuscadorPartidos() {
-    }
-
-    /**
-     * 
-     */
-    private List<Partido> partidosAbiertos;
-
-    /**
-     * 
-     */
     private IStrategyBuscadorPartidos strategy;
 
+    private List<Partido> partidosAbiertos;
 
-
-
-
-    /**
-     * @return
-     */
-    public Partido buscarPartido() {
-        // TODO implement here
-        return null;
+    public BuscadorPartidos(IStrategyBuscadorPartidos strategy) {
+        this.strategy = strategy;
+        this.partidosAbiertos = new ArrayList<>();
     }
 
-    /**
-     * @param strategy
-     * @return
-     */
+    public void agregarPartidoAbierto(Partido partido) {
+        partidosAbiertos.add(partido);
+    }
+
+    public void removerPartidoAbierto (Partido partido) {
+        partidosAbiertos.remove(partido);
+    }
+
+    public List<Partido> getPartidosAbiertos() {
+        return partidosAbiertos;
+    }
+
+    public List<Partido> buscarPartido(Jugador jugador) {
+        return strategy.buscarPartido(jugador, getPartidosAbiertos());
+    }
+
     public void cambiarStrategy(IStrategyBuscadorPartidos strategy) {
-        // TODO implement here
+        this.strategy = strategy;
     }
 
 }

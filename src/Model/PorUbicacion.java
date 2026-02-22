@@ -6,21 +6,18 @@ import java.util.*;
 /**
  * 
  */
-public class PorUbicacion {
+public class PorUbicacion implements IStrategyBuscadorPartidos{
 
-    /**
-     * Default constructor
-     */
-    public PorUbicacion() {
-    }
+    public List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos) {
+        List <Partido> partidosFiltro = new ArrayList<>();
 
-
-    /**
-     * @return
-     */
-    public Partido buscarPartido() {
-        // TODO implement here
-        return null;
+        for (Partido partido : partidosAbiertos) {
+            if (jugador.getCodigoPostal()
+                    .equals(partido.getCodigoPostal())) {
+                partidosFiltro.add(partido);
+            }
+        }
+        return partidosFiltro;
     }
 
 }

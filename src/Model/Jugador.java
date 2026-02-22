@@ -1,5 +1,8 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jugador {
 
     private String id;
@@ -11,6 +14,7 @@ public class Jugador {
     private AbstractNivelDeporte nivelDeporteFavorito;
     private String codigoPostal;
     private int nPartidos;
+    private List<Partido> partidosCompletados;
 
     public Jugador(String id, String nombre, String mail, String username, String password,
                    AbstractDeporte deporteFavorito, String codigoPostal) {
@@ -23,6 +27,7 @@ public class Jugador {
         this.codigoPostal = codigoPostal;
         this.nPartidos = 0;
         this.nivelDeporteFavorito = new Principiante(this);
+        this.partidosCompletados = new ArrayList<>();
     }
 
     public Jugador(String id, String nombre, String mail, String username, String password,
@@ -40,6 +45,10 @@ public class Jugador {
 
     public void confirmarPartido() {
         this.nPartidos++;
+    }
+
+    public void addPartidoCompletado(Partido partido) {
+        partidosCompletados.add(partido);
     }
 
     // Getters
@@ -78,6 +87,10 @@ public class Jugador {
 
     public int getNPartidos() {
         return nPartidos;
+    }
+
+    public List<Partido> getPartidosCompletados() {
+        return partidosCompletados;
     }
 
     // Setters

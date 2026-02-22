@@ -8,14 +8,5 @@ import java.util.*;
  */
 public interface IStrategyBuscadorPartidos {
 
-
-
-
-
-
-    /**
-     * @return
-     */
-    public Partido buscarPartido();
-
+    List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos);
 }

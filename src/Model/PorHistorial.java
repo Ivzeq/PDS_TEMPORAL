@@ -1,26 +1,28 @@
 package Model;
 
-import java.io.*;
 import java.util.*;
 
 /**
  * 
  */
-public class PorHistorial {
+public class PorHistorial implements IStrategyBuscadorPartidos{
 
-    /**
-     * Default constructor
-     */
-    public PorHistorial() {
-    }
+    public List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos) {
+        List <Partido> partidosFiltro = new ArrayList<>();
+        int minimoCoincidencias = 3;
 
-
-    /**
-     * @return
-     */
-    public Partido buscarPartido() {
-        // TODO implement here
-        return null;
+        for (Partido partido : partidosAbiertos) {
+            int contadorCoincidencias = 0;
+            for (Jugador jugadorPartidosAbiertos : partido.getJugadores()) {
+                if(jugador.equals(jugadorPartidosAbiertos)){
+                    contadorCoincidencias ++;
+                }
+            }
+            if (contadorCoincidencias >= minimoCoincidencias) {
+                partidosFiltro.add(partido);
+            }
+        }
+        return partidosFiltro;
     }
 
 }
