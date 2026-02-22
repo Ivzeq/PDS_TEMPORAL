@@ -20,10 +20,7 @@ public class Partido {
     public Partido() {
         this.jugadores = new ArrayList<>();
         this.observers = new ArrayList<>();
-    }
-
-    public void avanzarEstado() {
-        // TODO implement here
+        this.estado = new NecesitamosJugadores();
     }
 
     public void agregarJugador(Jugador jugador) {
@@ -32,6 +29,10 @@ public class Partido {
 
     public void removerJugador(Jugador jugador) {
         // TODO implement here
+    }
+
+    public void setEstado(IEstadoPartido estado) {
+        this.estado = estado;
     }
 
     // Getters needed by notification system

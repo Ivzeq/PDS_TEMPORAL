@@ -1,25 +1,12 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
 /**
  * 
  */
 public class NecesitamosJugadores implements IEstadoPartido {
 
-    /**
-     * Default constructor
-     */
-    public NecesitamosJugadores() {
+    @Override
+    public void avanzarEstado(Partido partido) {
+        partido.setEstado(new PartidoArmado());
     }
-
-
-    /**
-     * @return
-     */
-    public void avanzarEstado() {
-        // TODO implement here
-    }
-
 }

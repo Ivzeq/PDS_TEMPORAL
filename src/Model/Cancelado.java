@@ -1,25 +1,12 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
 /**
  * 
  */
 public class Cancelado implements IEstadoPartido {
-
-    /**
-     * Default constructor
-     */
-    public Cancelado() {
+    
+    @Override
+    public void avanzarEstado(Partido partido) {
+        partido.setEstado(new Cancelado());
     }
-
-
-    /**
-     * @return
-     */
-    public void avanzarEstado() {
-        // TODO implement IEstadoPartido.avanzarEstado() here
-    }
-
 }
