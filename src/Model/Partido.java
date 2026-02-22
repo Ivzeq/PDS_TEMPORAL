@@ -6,36 +6,67 @@ import java.util.List;
 
 public class Partido {
 
-    private AbstractDeporte deporte;
-    private int nJugadores;
+    private final AbstractDeporte deporte;
+    private final int nJugadores;
     private AbstractNivelDeporte nivelJugadores;
-    private int duracion;
-    private String ubicacion;
+    private final int duracion;
+    private String codigoPostal;
     private Date horario;
     private IEstadoPartido estado;
     private List<Jugador> jugadores;
-    private Jugador organizador;
+    private final Jugador organizador;
     private List<IObserverPartido> observers;
 
-    public Partido() {
+    public Partido(AbstractDeporte deporte, AbstractNivelDeporte nivelDeporte, String codigoPostal, Date horario, Jugador organizador) {
+        this.deporte = deporte;
+        this.nJugadores = deporte.getCantidadJugadores();
+        this.nivelJugadores = nivelDeporte;
+        this.duracion = deporte.getDuracionPartido();
+        this.codigoPostal = codigoPostal;
+        this.horario = horario;
+        this.organizador = organizador;
+        this.estado = new NecesitamosJugadores();
         this.jugadores = new ArrayList<>();
         this.observers = new ArrayList<>();
-        this.estado = new NecesitamosJugadores();
+
+        agregarJugador(organizador);
     }
 
+    // Setters
+
     public void agregarJugador(Jugador jugador) {
-        // TODO implement here
+        jugadores.add(jugador);
     }
 
     public void removerJugador(Jugador jugador) {
-        // TODO implement here
+        jugadores.remove(jugador);
+    }
+
+    public void agregarObserver(IObserverPartido observer) {
+        observers.add(observer);
+    }
+
+    public void removerObservers(IObserverPartido observer) {
+        observers.remove(observer);
     }
 
     public void setEstado(IEstadoPartido estado) {
         this.estado = estado;
     }
 
-    // Getters needed by notification system
+    public void setNivelJugadores (AbstractNivelDeporte nivelJugadores) {
+        this.nivelJugadores = nivelJugadores;
+    }
+
+    public void setCodigoPostal (String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    public void setHorario(Date horario) {
+        this.horario = horario;
+    }
+
+    // Getters
 
     public AbstractDeporte getDeporte() {
         return deporte;
@@ -61,8 +92,8 @@ public class Partido {
         return nJugadores;
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public String getCodigoPostal() {
+        return codigoPostal;
     }
 
     public Date getHorario() {
