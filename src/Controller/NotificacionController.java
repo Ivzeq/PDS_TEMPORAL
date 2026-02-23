@@ -27,8 +27,12 @@ public class NotificacionController {
 
     public void notificarJugador(Jugador jugador, String mensaje) {
         Notificacion notificacion = new Notificacion(mensaje, jugador);
-        for (Notificador notificador : notificadores) {
-            notificador.enviarNotificacion(notificacion);
+        if (jugador.getNotificador() != null) {
+            jugador.getNotificador().enviarNotificacion(notificacion);
+        } else {
+            for (Notificador notificador : notificadores) {
+                notificador.enviarNotificacion(notificacion);
+            }
         }
     }
 

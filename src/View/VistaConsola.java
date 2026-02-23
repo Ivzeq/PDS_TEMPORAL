@@ -1,7 +1,6 @@
 package View;
 
 import Controller.JugadorController;
-import Controller.NotificacionController;
 import Controller.PartidoController;
 import Model.*;
 
@@ -29,56 +28,60 @@ public class VistaConsola {
             System.out.println("========================================");
             System.out.println("1. Registrar jugador");
             System.out.println("2. Crear partido");
-            System.out.println("3. Buscar partidos");
-            System.out.println("4. Inscribirse a un partido");
-            System.out.println("5. Avanzar estado de partido");
-            System.out.println("6. Ver jugadores registrados");
-            System.out.println("7. Ver partidos");
-            System.out.println("8. Modificar datos de jugador");
-            System.out.println("9. Salir");
+            System.out.println("3. Buscar partidos y unirse");
+            System.out.println("4. Avanzar estado de partido");
+            System.out.println("5. Ver jugadores registrados");
+            System.out.println("6. Ver partidos");
+            System.out.println("7. Modificar datos de jugador");
+            System.out.println("8. Cambiar modo de busqueda de partidos");
+            System.out.println("0. Salir");
             System.out.println("========================================");
             System.out.print("Seleccione una opcion: ");
 
             String opcion = leerEntrada();
-            switch (opcion) {
-                case "1":
-                    mostrarRegistro();
-                    break;
-                case "2":
-                    mostrarCrearPartido();
-                    break;
-                case "3":
-                    mostrarBuscarPartidos();
-                    break;
-                case "4":
-                    mostrarInscripcion();
-                    break;
-                case "5":
-                    mostrarAvanzarEstado();
-                    break;
-                case "6":
-                    mostrarJugadores();
-                    break;
-                case "7":
-                    mostrarPartidos();
-                    break;
-                case "8":
-                    mostrarOpciones();
-                    break;
-                case "9":
-                    salir = true;
-                    mostrarMensaje("Hasta luego!");
-                    break;
-                default:
-                    mostrarMensaje("Opcion no valida.");
+            try {
+                switch (opcion) {
+                    case "1":
+                        mostrarRegistro();
+                        break;
+                    case "2":
+                        mostrarCrearPartido();
+                        break;
+                    case "3":
+                        mostrarBuscarPartidos();
+                        break;
+                    case "4":
+                        mostrarAvanzarEstado();
+                        break;
+                    case "5":
+                        mostrarJugadores();
+                        break;
+                    case "6":
+                        mostrarPartidos();
+                        break;
+                    case "7":
+                        mostrarOpciones();
+                        break;
+                    case "8":
+                        mostrarCambiarBusqueda();
+                        break;
+                    case "0":
+                        salir = true;
+                        mostrarMensaje("Hasta luego!");
+                        break;
+                    default:
+                        mostrarMensaje("Opcion no valida.");
+                }
+            } catch (NumberFormatException e) {
+                mostrarMensaje("Entrada invalida. Ingrese un numero valido.");
+            } catch (Exception e) {
+                mostrarMensaje("Ocurrio un error: " + e.getMessage());
             }
         }
     }
 
     public void mostrarRegistro() {
         System.out.println("\n--- Registro de Jugador ---");
-        System.out.print("ID: ");
-        String id = leerEntrada();
         System.out.print("Nombre: ");
         String nombre = leerEntrada();
         System.out.print("Email: ");
@@ -90,22 +93,35 @@ public class VistaConsola {
         System.out.print("Codigo postal: ");
         String codigoPostal = leerEntrada();
 
-        System.out.println("Deporte favorito:");
-        System.out.println("1. Futbol");
-        System.out.println("2. Basquet");
-        System.out.println("3. Voley");
-        System.out.println("4. Ninguno");
-        System.out.print("Seleccione: ");
-        String deporteOpcion = leerEntrada();
-
         AbstractDeporte deporte = null;
-        switch (deporteOpcion) {
-            case "1": deporte = new Futbol(); break;
-            case "2": deporte = new Basquet(); break;
-            case "3": deporte = new Voley(); break;
+        while (deporte == null) {
+            System.out.println("Deporte favorito:");
+            System.out.println("1. Futbol");
+            System.out.println("2. Basquet");
+            System.out.println("3. Voley");
+            System.out.print("Seleccione: ");
+            String deporteOpcion = leerEntrada();
+            switch (deporteOpcion) {
+                case "1": deporte = new Futbol(); break;
+                case "2": deporte = new Basquet(); break;
+                case "3": deporte = new Voley(); break;
+                default: mostrarMensaje("Debe seleccionar un deporte."); break;
+            }
         }
 
-        Jugador jugador = jugadorController.registrarJugador(id, nombre, mail, username, password, deporte, codigoPostal);
+        System.out.println("Medio de notificacion preferido:");
+        System.out.println("1. Push (Firebase)");
+        System.out.println("2. Correo electronico");
+        System.out.print("Seleccione: ");
+        String notiOpcion = leerEntrada();
+
+        Jugador jugador = jugadorController.registrarJugador(nombre, mail, username, password, deporte, codigoPostal);
+
+        IStrategyNotificador strategy = seleccionarStrategyNotificacion(notiOpcion);
+        if (strategy != null) {
+            jugadorController.setNotificadorJugador(jugador, strategy);
+        }
+
         mostrarMensaje("Jugador registrado: " + jugador);
     }
 
@@ -156,57 +172,95 @@ public class VistaConsola {
         System.out.print("Ubicacion: ");
         String ubicacion = leerEntrada();
 
-        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, new Date(), organizador);
+        System.out.print("Codigo postal: ");
+        String codigoPostal = leerEntrada();
+
+        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal, new Date(), organizador);
         mostrarMensaje("Partido creado! Deporte: " + partido.getDeporte() + " | Estado: " + partido.getEstado());
     }
 
     public void mostrarBuscarPartidos() {
         System.out.println("\n--- Buscar Partidos ---");
-        Partido encontrado = partidoController.buscarPartido();
-        if (encontrado != null) {
-            mostrarMensaje("Partido encontrado: " + encontrado.getDeporte() + " en " + encontrado.getUbicacion());
-        } else {
-            mostrarMensaje("No se encontraron partidos disponibles.");
-        }
-    }
-
-    public void mostrarInscripcion() {
-        System.out.println("\n--- Inscripcion a Partido ---");
-
-        List<Partido> partidos = partidoController.getPartidos();
-        if (partidos.isEmpty()) {
-            mostrarMensaje("No hay partidos disponibles.");
-            return;
-        }
-
-        System.out.println("Partidos disponibles:");
-        for (int i = 0; i < partidos.size(); i++) {
-            Partido p = partidos.get(i);
-            System.out.println((i + 1) + ". " + p.getDeporte() + " en " + p.getUbicacion()
-                    + " [" + p.getEstado().getClass().getSimpleName() + "]"
-                    + " (" + p.getJugadores().size() + "/" + p.getNJugadores() + " jugadores)");
-        }
-        System.out.print("Seleccione partido: ");
-        int partidoIndex = Integer.parseInt(leerEntrada()) - 1;
-        if (partidoIndex < 0 || partidoIndex >= partidos.size()) {
-            mostrarMensaje("Seleccion invalida.");
-            return;
-        }
 
         List<Jugador> jugadores = jugadorController.getJugadores();
-        System.out.println("Jugadores disponibles:");
+        if (jugadores.isEmpty()) {
+            mostrarMensaje("No hay jugadores registrados.");
+            return;
+        }
+
+        System.out.println("Quien busca partido?");
         for (int i = 0; i < jugadores.size(); i++) {
             System.out.println((i + 1) + ". " + jugadores.get(i).getUsername());
         }
         System.out.print("Seleccione jugador: ");
-        int jugadorIndex = Integer.parseInt(leerEntrada()) - 1;
-        if (jugadorIndex < 0 || jugadorIndex >= jugadores.size()) {
+        int index = Integer.parseInt(leerEntrada()) - 1;
+        if (index < 0 || index >= jugadores.size()) {
             mostrarMensaje("Seleccion invalida.");
             return;
         }
+        Jugador jugador = jugadores.get(index);
 
-        partidoController.agregarJugador(partidos.get(partidoIndex), jugadores.get(jugadorIndex));
-        mostrarMensaje("Jugador inscripto al partido.");
+        System.out.println("Buscar:");
+        System.out.println("1. Solo partidos de " + jugador.getDeporteFavorito() + " (mi deporte favorito)");
+        System.out.println("2. Todos los deportes");
+        System.out.print("Seleccione: ");
+        String filtro = leerEntrada();
+
+        String strategyActual = partidoController.getNombreStrategyBuscador();
+        List<Partido> encontrados;
+        if (filtro.equals("2")) {
+            encontrados = partidoController.buscarTodosPartidos(jugador);
+            strategyActual = "Todos";
+        } else {
+            encontrados = partidoController.buscarPartidos(jugador);
+        }
+
+        if (encontrados.isEmpty()) {
+            mostrarMensaje("No se encontraron partidos disponibles (modo: " + strategyActual + ").");
+        } else {
+            mostrarMensaje("Se encontraron " + encontrados.size() + " partido(s) [modo: " + strategyActual + "]:");
+            for (int i = 0; i < encontrados.size(); i++) {
+                Partido p = encontrados.get(i);
+                StringBuilder sb = new StringBuilder();
+                sb.append("  ").append(i + 1).append(". ").append(p.getDeporte());
+                sb.append(" en ").append(p.getUbicacion());
+                sb.append(" (").append(p.getJugadores().size()).append("/").append(p.getNJugadores()).append(" jugadores)");
+                sb.append(" | Organizador: ").append(p.getOrganizador().getUsername());
+
+                switch (strategyActual) {
+                    case "PorUbicacion":
+                        sb.append(" | CP: ").append(p.getCodigoPostal());
+                        break;
+                    case "PorHistorial":
+                        sb.append(" | Deporte: ").append(p.getDeporte());
+                        break;
+                    case "PorNivel":
+                        String nivelPartido = p.getNivelJugadores() != null
+                                ? p.getNivelJugadores().toString() : "Sin restriccion";
+                        sb.append(" | Nivel requerido: ").append(nivelPartido);
+                        break;
+                }
+
+                System.out.println(sb.toString());
+            }
+
+            System.out.print("\nDesea unirse a un partido? (s/n): ");
+            String respuesta = leerEntrada();
+            if (respuesta.equalsIgnoreCase("s")) {
+                System.out.print("Seleccione numero de partido: ");
+                int partidoIndex = Integer.parseInt(leerEntrada()) - 1;
+                if (partidoIndex < 0 || partidoIndex >= encontrados.size()) {
+                    mostrarMensaje("Seleccion invalida.");
+                } else {
+                    boolean ok = partidoController.agregarJugador(encontrados.get(partidoIndex), jugador);
+                    if (ok) {
+                        mostrarMensaje("Te uniste al partido!");
+                    } else {
+                        mostrarMensaje("Ya estas inscripto en este partido.");
+                    }
+                }
+            }
+        }
     }
 
     public void mostrarOpciones() {
@@ -235,6 +289,7 @@ public class VistaConsola {
         System.out.println("3. Cambiar deporte favorito");
         System.out.println("4. Subir nivel");
         System.out.println("5. Bajar nivel");
+        System.out.println("6. Cambiar medio de notificacion");
         System.out.print("Seleccione: ");
         String opcion = leerEntrada();
 
@@ -272,8 +327,60 @@ public class VistaConsola {
                 jugadorController.bajarNivel(jugador);
                 mostrarMensaje("Nivel actual: " + jugador.getNivelDeporteFavorito());
                 break;
+            case "6":
+                System.out.println("1. Push (Firebase)");
+                System.out.println("2. Correo electronico");
+                System.out.print("Seleccione: ");
+                String notiOp = leerEntrada();
+                IStrategyNotificador strategy = seleccionarStrategyNotificacion(notiOp);
+                if (strategy != null) {
+                    jugadorController.setNotificadorJugador(jugador, strategy);
+                    mostrarMensaje("Medio de notificacion actualizado a: " + strategy.getClass().getSimpleName());
+                } else {
+                    mostrarMensaje("Opcion no valida.");
+                }
+                break;
             default:
                 mostrarMensaje("Opcion no valida.");
+        }
+    }
+
+    private void mostrarCambiarBusqueda() {
+        System.out.println("\n--- Cambiar Modo de Busqueda de Partidos ---");
+        System.out.println("1. Por Ubicacion");
+        System.out.println("2. Por Historial");
+        System.out.println("3. Por Nivel");
+        System.out.print("Seleccione: ");
+        String opcion = leerEntrada();
+
+        IStrategyBuscadorPartidos strategy;
+        switch (opcion) {
+            case "1":
+                strategy = new PorUbicacion();
+                break;
+            case "2":
+                strategy = new PorHistorial();
+                break;
+            case "3":
+                strategy = new PorNivel();
+                break;
+            default:
+                mostrarMensaje("Opcion no valida.");
+                return;
+        }
+
+        partidoController.cambiarStrategyBuscador(strategy);
+        mostrarMensaje("Modo de busqueda cambiado a: " + strategy.getClass().getSimpleName());
+    }
+
+    private IStrategyNotificador seleccionarStrategyNotificacion(String opcion) {
+        switch (opcion) {
+            case "1":
+                return new Push(new Firebase());
+            case "2":
+                return new CorreoElectronico(new JavaMail("smtp.gmail.com", 587, "", ""));
+            default:
+                return null;
         }
     }
 
@@ -286,7 +393,7 @@ public class VistaConsola {
     }
 
     private void mostrarAvanzarEstado() {
-        System.out.println("\n--- Avanzar Estado de Partido ---");
+        System.out.println("\n--- Gestionar Estado de Partido ---");
 
         List<Partido> partidos = partidoController.getPartidos();
         if (partidos.isEmpty()) {
@@ -298,7 +405,9 @@ public class VistaConsola {
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
             System.out.println((i + 1) + ". " + p.getDeporte() + " en " + p.getUbicacion()
-                    + " [" + p.getEstado().getClass().getSimpleName() + "]");
+                    + " [" + p.getEstado().getClass().getSimpleName() + "]"
+                    + " (" + p.getJugadores().size() + "/" + p.getNJugadores() + ")"
+                    + " | Organizador: " + p.getOrganizador().getUsername());
         }
         System.out.print("Seleccione partido: ");
         int index = Integer.parseInt(leerEntrada()) - 1;
@@ -307,8 +416,47 @@ public class VistaConsola {
             return;
         }
 
-        partidoController.avanzarEstado(partidos.get(index));
-        mostrarMensaje("Estado actualizado a: " + partidos.get(index).getEstado().getClass().getSimpleName());
+        Partido partido = partidos.get(index);
+
+        System.out.println("1. Avanzar estado");
+        System.out.println("2. Cancelar partido (solo organizador)");
+        System.out.print("Seleccione: ");
+        String opcion = leerEntrada();
+
+        switch (opcion) {
+            case "1":
+                String estadoAntes = partido.getEstado().getClass().getSimpleName();
+                partidoController.avanzarEstado(partido);
+                String estadoDespues = partido.getEstado().getClass().getSimpleName();
+                if (estadoAntes.equals(estadoDespues)) {
+                    mostrarMensaje("No se pudo avanzar el estado.");
+                } else {
+                    mostrarMensaje("Estado actualizado a: " + estadoDespues);
+                }
+                break;
+            case "2":
+                System.out.println("Quien cancela? Seleccione jugador:");
+                List<Jugador> jugadores = jugadorController.getJugadores();
+                for (int i = 0; i < jugadores.size(); i++) {
+                    System.out.println((i + 1) + ". " + jugadores.get(i).getUsername());
+                }
+                System.out.print("Seleccione: ");
+                int jIndex = Integer.parseInt(leerEntrada()) - 1;
+                if (jIndex < 0 || jIndex >= jugadores.size()) {
+                    mostrarMensaje("Seleccion invalida.");
+                    return;
+                }
+                Jugador solicitante = jugadores.get(jIndex);
+                if (solicitante.equals(partido.getOrganizador())) {
+                    partidoController.cancelarPartido(partido);
+                    mostrarMensaje("Partido cancelado.");
+                } else {
+                    mostrarMensaje("Solo el organizador (" + partido.getOrganizador().getUsername() + ") puede cancelar el partido.");
+                }
+                break;
+            default:
+                mostrarMensaje("Opcion no valida.");
+        }
     }
 
     private void mostrarJugadores() {
@@ -338,21 +486,25 @@ public class VistaConsola {
                     + " | Jugadores: " + p.getJugadores().size() + "/" + p.getNJugadores()
                     + " | Organizador: " + p.getOrganizador().getUsername());
         }
-    }
 
-    public static void main(String[] args) {
-        NotificacionController notificacionController = new NotificacionController();
-
-        IAdapterFirebase adapterFirebase = new Firebase();
-        IStrategyNotificador strategyPush = new Push(adapterFirebase);
-        Notificador notificadorPush = new Notificador(strategyPush);
-        notificacionController.agregarNotificador(notificadorPush);
-
-        JugadorController jugadorController = new JugadorController(notificacionController);
-        BuscadorPartidos buscadorPartidos = new BuscadorPartidos();
-        PartidoController partidoController = new PartidoController(buscadorPartidos, notificacionController);
-
-        VistaConsola vista = new VistaConsola(jugadorController, partidoController);
-        vista.mostrarMenuPrincipal();
+        System.out.print("\nVer jugadores de un partido? (s/n): ");
+        String respuesta = leerEntrada();
+        if (respuesta.equalsIgnoreCase("s")) {
+            System.out.print("Seleccione numero de partido: ");
+            int index = Integer.parseInt(leerEntrada()) - 1;
+            if (index < 0 || index >= partidos.size()) {
+                mostrarMensaje("Seleccion invalida.");
+            } else {
+                Partido p = partidos.get(index);
+                System.out.println("\n--- Jugadores en " + p.getDeporte() + " - " + p.getUbicacion() + " ---");
+                List<Jugador> jugadores = p.getJugadores();
+                for (int i = 0; i < jugadores.size(); i++) {
+                    Jugador j = jugadores.get(i);
+                    String rol = j.equals(p.getOrganizador()) ? " (organizador)" : "";
+                    System.out.println("  " + (i + 1) + ". " + j.getUsername()
+                            + " - " + j.getNombre() + rol);
+                }
+            }
+        }
     }
 }

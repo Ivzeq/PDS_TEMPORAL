@@ -11,6 +11,7 @@ public class Partido {
     private AbstractNivelDeporte nivelJugadores;
     private int duracion;
     private String ubicacion;
+    private String codigoPostal;
     private Date horario;
     private IEstadoPartido estado;
     private List<Jugador> jugadores;
@@ -27,13 +28,18 @@ public class Partido {
         notificarObservers();
     }
 
-    public void agregarJugador(Jugador jugador) {
+    public boolean agregarJugador(Jugador jugador) {
+        if (jugadores.contains(jugador)) {
+            return false;
+        }
         if (jugadores.size() < nJugadores) {
             jugadores.add(jugador);
             if (jugadores.size() == nJugadores && estado instanceof NecesitamosJugadores) {
                 avanzarEstado();
             }
+            return true;
         }
+        return false;
     }
 
     public void removerJugador(Jugador jugador) {
@@ -84,6 +90,10 @@ public class Partido {
         return ubicacion;
     }
 
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
     public Date getHorario() {
         return horario;
     }
@@ -116,6 +126,10 @@ public class Partido {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
     }
 
     public void setHorario(Date horario) {

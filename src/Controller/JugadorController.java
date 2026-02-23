@@ -1,7 +1,9 @@
 package Controller;
 
 import Model.AbstractDeporte;
+import Model.IStrategyNotificador;
 import Model.Jugador;
+import Model.Notificador;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +18,9 @@ public class JugadorController {
         this.notificacionController = notificacionController;
     }
 
-    public Jugador registrarJugador(String id, String nombre, String mail, String username,
+    public Jugador registrarJugador(String nombre, String mail, String username,
                                     String password, AbstractDeporte deporteFavorito, String codigoPostal) {
-        Jugador jugador;
-        if (deporteFavorito != null) {
-            jugador = new Jugador(id, nombre, mail, username, password, deporteFavorito, codigoPostal);
-        } else {
-            jugador = new Jugador(id, nombre, mail, username, password, codigoPostal);
-        }
+        Jugador jugador = new Jugador(nombre, mail, username, password, deporteFavorito, codigoPostal);
         jugadores.add(jugador);
         return jugador;
     }
@@ -38,6 +35,10 @@ public class JugadorController {
 
     public void setDeporteFavoritoJugador(Jugador jugador, AbstractDeporte deporte) {
         jugador.setDeporteFavorito(deporte);
+    }
+
+    public void setNotificadorJugador(Jugador jugador, IStrategyNotificador strategy) {
+        jugador.setNotificador(new Notificador(strategy));
     }
 
     public void subirNivel(Jugador jugador) {

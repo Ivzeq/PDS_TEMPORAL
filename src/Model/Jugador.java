@@ -2,6 +2,8 @@ package Model;
 
 public class Jugador {
 
+    private static int nextId = 1;
+
     private String id;
     private String nombre;
     private String mail;
@@ -11,10 +13,11 @@ public class Jugador {
     private AbstractNivelDeporte nivelDeporteFavorito;
     private String codigoPostal;
     private int nPartidos;
+    private Notificador notificador;
 
-    public Jugador(String id, String nombre, String mail, String username, String password,
+    public Jugador(String nombre, String mail, String username, String password,
                    AbstractDeporte deporteFavorito, String codigoPostal) {
-        this.id = id;
+        this.id = String.valueOf(nextId++);
         this.nombre = nombre;
         this.mail = mail;
         this.username = username;
@@ -23,11 +26,6 @@ public class Jugador {
         this.codigoPostal = codigoPostal;
         this.nPartidos = 0;
         this.nivelDeporteFavorito = new Principiante(this);
-    }
-
-    public Jugador(String id, String nombre, String mail, String username, String password,
-                   String codigoPostal) {
-        this(id, nombre, mail, username, password, null, codigoPostal);
     }
 
     public void modificarMail(String mail) {
@@ -80,6 +78,10 @@ public class Jugador {
         return nPartidos;
     }
 
+    public Notificador getNotificador() {
+        return notificador;
+    }
+
     // Setters
 
     public void setDeporteFavorito(AbstractDeporte deporteFavorito) {
@@ -94,14 +96,20 @@ public class Jugador {
         this.codigoPostal = codigoPostal;
     }
 
+    public void setNotificador(Notificador notificador) {
+        this.notificador = notificador;
+    }
+
     @Override
     public String toString() {
         return "Jugador{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", nombre='" + nombre + '\'' +
-                ", deporteFavorito=" + (deporteFavorito != null ? deporteFavorito : "N/A") +
+                ", deporteFavorito=" + deporteFavorito +
                 ", nivel=" + nivelDeporteFavorito +
                 ", nPartidos=" + nPartidos +
+                ", notificacion=" + (notificador != null ? notificador.getStrategy().getClass().getSimpleName() : "N/A") +
                 '}';
     }
 }
