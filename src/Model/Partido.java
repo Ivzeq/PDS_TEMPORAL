@@ -8,9 +8,9 @@ public class Partido {
 
     private AbstractDeporte deporte;
     private int nJugadores;
-    private AbstractNivelDeporte nivelJugadores;
+    private IEstadoNivelDeporte nivelPartido;
     private int duracion;
-    private String ubicacion;
+    private String codigoPostal;
     private Date horario;
     private IEstadoPartido estado;
     private List<Jugador> jugadores;
@@ -18,8 +18,18 @@ public class Partido {
     private List<IObserverPartido> observers;
 
     public Partido() {
+        this.deporte = deporte;
+        this.nJugadores = deporte.getCantidadJugadores();
+        this.nivelPartido = nivelPartido;
+        this.duracion = deporte.getDuracionPartido();
+        this.codigoPostal = codigoPostal;
+        this.horario = horario;
+        this.organizador = organizador;
+        this.estado = new NecesitamosJugadores();
         this.jugadores = new ArrayList<>();
         this.observers = new ArrayList<>();
+
+        agregarJugador(organizador);
     }
 
     public void avanzarEstado() {
@@ -54,6 +64,19 @@ public class Partido {
         observers.remove(observer);
     }
 
+
+    public void cancelarPartido() {
+        estado.cancelarPartido(this);
+    }
+
+    public void subirNivel() {
+        nivelPartido.subirNivelPartido(this);
+    }
+
+    public void bajarNivel() {
+        nivelPartido.bajarNivelPartido(this);
+    }
+
     // Getters
 
     public AbstractDeporte getDeporte() {
@@ -81,7 +104,7 @@ public class Partido {
     }
 
     public String getUbicacion() {
-        return ubicacion;
+        return codigoPostal;
     }
 
     public Date getHorario() {
@@ -92,8 +115,8 @@ public class Partido {
         return duracion;
     }
 
-    public AbstractNivelDeporte getNivelJugadores() {
-        return nivelJugadores;
+    public IEstadoNivelDeporte getNivelPartido() {
+        return nivelPartido;
     }
 
     // Setters
@@ -106,8 +129,8 @@ public class Partido {
         this.nJugadores = nJugadores;
     }
 
-    public void setNivelJugadores(AbstractNivelDeporte nivelJugadores) {
-        this.nivelJugadores = nivelJugadores;
+    public void setNivelPartido(IEstadoNivelDeporte nivelPartido) {
+        this.nivelPartido = nivelPartido;
     }
 
     public void setDuracion(int duracion) {
@@ -115,7 +138,7 @@ public class Partido {
     }
 
     public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
+        this.codigoPostal = ubicacion;
     }
 
     public void setHorario(Date horario) {

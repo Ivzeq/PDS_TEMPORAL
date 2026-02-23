@@ -1,10 +1,20 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PorUbicacion implements IStrategyBuscadorPartidos {
 
     @Override
-    public Partido buscarPartido() {
-        System.out.println("[BuscadorPartidos] Buscando partido por ubicacion...");
-        return null;
+    public List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos) {
+        List <Partido> partidosFiltro = new ArrayList<>();
+
+        for (Partido partido : partidosAbiertos) {
+            if (jugador.getCodigoPostal()
+                    .equals(partido.getUbicacion())) {
+                partidosFiltro.add(partido);
+            }
+        }
+        return partidosFiltro;
     }
 }

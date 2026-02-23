@@ -1,10 +1,19 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PorNivel implements IStrategyBuscadorPartidos {
 
-    @Override
-    public Partido buscarPartido() {
-        System.out.println("[BuscadorPartidos] Buscando partido por nivel...");
-        return null;
+    public List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos) {
+        List <Partido> partidosFiltro = new ArrayList<>();
+
+        for (Partido partido : partidosAbiertos) {
+            if (jugador.getNivelDeporteFavorito()
+                    .equals(partido.getNivelPartido())) {
+                partidosFiltro.add(partido);
+            }
+        }
+        return partidosFiltro;
     }
 }

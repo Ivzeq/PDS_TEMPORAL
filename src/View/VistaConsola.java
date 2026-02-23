@@ -162,9 +162,11 @@ public class VistaConsola {
 
     public void mostrarBuscarPartidos() {
         System.out.println("\n--- Buscar Partidos ---");
-        Partido encontrado = partidoController.buscarPartido();
-        if (encontrado != null) {
-            mostrarMensaje("Partido encontrado: " + encontrado.getDeporte() + " en " + encontrado.getUbicacion());
+
+        Jugador jugadorBusqueda = new Jugador("1", "Juan Perez", "juan1@mail.com", "juanp1", "pass123", new Futbol(), "1000");
+        List<Partido> encontrado = partidoController.buscarPartido(jugadorBusqueda);
+        if (encontrado.getFirst() != null) {
+            mostrarMensaje("Partido encontrado: " + encontrado.getFirst().getDeporte() + " en " + encontrado.getFirst().getUbicacion());
         } else {
             mostrarMensaje("No se encontraron partidos disponibles.");
         }

@@ -8,7 +8,7 @@ public class Jugador {
     private String username;
     private String password;
     private AbstractDeporte deporteFavorito;
-    private AbstractNivelDeporte nivelDeporteFavorito;
+    private IEstadoNivelDeporte nivelDeporteFavorito;
     private String codigoPostal;
     private int nPartidos;
 
@@ -22,7 +22,7 @@ public class Jugador {
         this.deporteFavorito = deporteFavorito;
         this.codigoPostal = codigoPostal;
         this.nPartidos = 0;
-        this.nivelDeporteFavorito = new Principiante(this);
+        this.nivelDeporteFavorito = new Principiante();
     }
 
     public Jugador(String id, String nombre, String mail, String username, String password,
@@ -40,6 +40,15 @@ public class Jugador {
 
     public void confirmarPartido() {
         this.nPartidos++;
+    }
+
+
+    public void subirNivel() {
+        nivelDeporteFavorito.subirNivelJugador(this);
+    }
+
+    public void bajarNivel() {
+        nivelDeporteFavorito.bajarNivelJugador(this);
     }
 
     // Getters
@@ -68,7 +77,7 @@ public class Jugador {
         return deporteFavorito;
     }
 
-    public AbstractNivelDeporte getNivelDeporteFavorito() {
+    public IEstadoNivelDeporte getNivelDeporteFavorito() {
         return nivelDeporteFavorito;
     }
 
@@ -86,7 +95,7 @@ public class Jugador {
         this.deporteFavorito = deporteFavorito;
     }
 
-    public void setNivelDeporteFavorito(AbstractNivelDeporte nivelDeporteFavorito) {
+    public void setNivelDeporteFavorito(IEstadoNivelDeporte nivelDeporteFavorito) {
         this.nivelDeporteFavorito = nivelDeporteFavorito;
     }
 

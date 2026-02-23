@@ -1,6 +1,8 @@
 package Model;
 
+import java.util.List;
+
 public interface IStrategyBuscadorPartidos {
 
-    Partido buscarPartido();
+    List<Partido> buscarPartido(Jugador jugador, List<Partido> partidosAbiertos);
 }

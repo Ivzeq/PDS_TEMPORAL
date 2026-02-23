@@ -18,12 +18,12 @@ public class PartidoController {
         this.notificacionController = notificacionController;
     }
 
-    public Partido crearPartido(AbstractDeporte deporte, int nJugadores, AbstractNivelDeporte nivelJugadores,
+    public Partido crearPartido(AbstractDeporte deporte, int nJugadores, IEstadoNivelDeporte nivelJugadores,
                                 int duracion, String ubicacion, Date horario, Jugador organizador) {
         Partido partido = new Partido();
         partido.setDeporte(deporte);
         partido.setNJugadores(nJugadores);
-        partido.setNivelJugadores(nivelJugadores);
+        partido.setNivelPartido(nivelJugadores);
         partido.setDuracion(duracion);
         partido.setUbicacion(ubicacion);
         partido.setHorario(horario);
@@ -50,8 +50,8 @@ public class PartidoController {
                 "El partido de " + partido.getDeporte() + " cambio a estado: " + partido.getEstado());
     }
 
-    public Partido buscarPartido() {
-        return buscadorPartidos.buscarPartido();
+    public List<Partido> buscarPartido(Jugador jugador) {
+        return buscadorPartidos.buscarPartido(jugador);
     }
 
     public void cambiarStrategyBuscador(IStrategyBuscadorPartidos strategy) {

@@ -1,22 +1,31 @@
 package Model;
 
-public class Principiante extends AbstractNivelDeporte {
+public class Principiante extends IEstadoNivelDeporte {
 
     private int maxPartidos;
 
-    public Principiante(Jugador jugador) {
-        super(jugador);
+    public Principiante() {
         this.maxPartidos = 10;
     }
 
-    public Principiante(Jugador jugador, int maxPartidos) {
-        super(jugador);
-        this.maxPartidos = maxPartidos;
+    @Override
+    public void subirNivelJugador(Jugador jugador) {
+        jugador.setNivelDeporteFavorito(new Avanzado());
     }
 
     @Override
-    public void subirNivel() {
-        jugador.setNivelDeporteFavorito(new Intermedio(jugador));
+    public void bajarNivelJugador(Jugador jugador) {
+        System.out.println("Jugador en nivel minimo");
+    }
+
+    @Override
+    public void subirNivelPartido(Partido partido) {
+        partido.setNivelPartido(new Avanzado());
+    }
+
+    @Override
+    public void bajarNivelPartido(Partido partido) {
+        System.out.println("Partido en nivel minimo");
     }
 
     public int getMaxPartidos() {

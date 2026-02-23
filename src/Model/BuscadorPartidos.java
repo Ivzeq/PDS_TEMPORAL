@@ -13,8 +13,16 @@ public class BuscadorPartidos {
         this.strategy = new PorUbicacion();
     }
 
-    public Partido buscarPartido() {
-        return strategy.buscarPartido();
+    public void agregarPartidoAbierto(Partido partido) {
+        partidosAbiertos.add(partido);
+    }
+
+    public void removerPartidoAbierto (Partido partido) {
+        partidosAbiertos.remove(partido);
+    }
+
+    public List<Partido> buscarPartido(Jugador jugador) {
+        return strategy.buscarPartido(jugador, getPartidosAbiertos());
     }
 
     public void cambiarStrategy(IStrategyBuscadorPartidos strategy) {

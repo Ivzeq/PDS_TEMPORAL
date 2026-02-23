@@ -53,29 +53,29 @@ public class Main {
                 System.out.println("--- Juan: Principiante -> Intermedio -> Avanzado ---");
                 System.out.println("Nivel inicial: " + juan.getNivelDeporteFavorito());
 
-                juan.getNivelDeporteFavorito().subirNivel();
+                juan.subirNivel();
                 System.out.println("subirNivel() -> " + juan.getNivelDeporteFavorito());
 
-                juan.getNivelDeporteFavorito().subirNivel();
+                juan.subirNivel();
                 System.out.println("subirNivel() -> " + juan.getNivelDeporteFavorito());
 
-                juan.getNivelDeporteFavorito().subirNivel();
+                juan.subirNivel();
                 System.out.println("subirNivel() (ya Avanzado, no-op) -> " + juan.getNivelDeporteFavorito());
 
                 System.out.println("\n--- Juan: Avanzado -> Intermedio -> Principiante ---");
 
-                juan.getNivelDeporteFavorito().bajarNivel();
+                juan.bajarNivel();
                 System.out.println("bajarNivel() -> " + juan.getNivelDeporteFavorito());
 
-                juan.getNivelDeporteFavorito().bajarNivel();
+                juan.bajarNivel();
                 System.out.println("bajarNivel() -> " + juan.getNivelDeporteFavorito());
 
-                juan.getNivelDeporteFavorito().bajarNivel();
+                juan.bajarNivel();
                 System.out.println("bajarNivel() (ya Principiante, no-op) -> " + juan.getNivelDeporteFavorito());
 
                 System.out.println("\n--- Maria: subir un nivel ---");
                 System.out.println("Nivel inicial: " + maria.getNivelDeporteFavorito());
-                maria.getNivelDeporteFavorito().subirNivel();
+                maria.subirNivel();
                 System.out.println("subirNivel() -> " + maria.getNivelDeporteFavorito());
 
                 System.out.println("\n=== 4. confirmarPartido() ===\n");

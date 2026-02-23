@@ -8,6 +8,11 @@ public class Cancelado implements IEstadoPartido {
     }
 
     @Override
+    public void cancelarPartido(Partido partido) {
+        System.out.println("Partido ya Cancelado");
+    }
+
+    @Override
     public String toString() {
         return "Cancelado";
     }

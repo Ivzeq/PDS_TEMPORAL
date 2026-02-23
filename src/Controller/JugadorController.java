@@ -41,11 +41,11 @@ public class JugadorController {
     }
 
     public void subirNivel(Jugador jugador) {
-        jugador.getNivelDeporteFavorito().subirNivel();
+        jugador.subirNivel();
     }
 
     public void bajarNivel(Jugador jugador) {
-        jugador.getNivelDeporteFavorito().bajarNivel();
+        jugador.bajarNivel();
     }
 
     public Jugador buscarJugadorPorUsername(String username) {

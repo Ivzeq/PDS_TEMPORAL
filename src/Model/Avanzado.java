@@ -1,13 +1,23 @@
 package Model;
 
-public class Avanzado extends AbstractNivelDeporte {
-
-    public Avanzado(Jugador jugador) {
-        super(jugador);
+public class Avanzado extends IEstadoNivelDeporte {
+    @Override
+    public void subirNivelJugador(Jugador jugador) {
+        System.out.println("Jugador en nivel maximo");
     }
 
     @Override
-    public void bajarNivel() {
-        jugador.setNivelDeporteFavorito(new Intermedio(jugador));
+    public void bajarNivelJugador(Jugador jugador) {
+        jugador.setNivelDeporteFavorito(new Intermedio());
+    }
+
+    @Override
+    public void subirNivelPartido(Partido partido) {
+        System.out.println("Partido en nivel maximo");
+    }
+
+    @Override
+    public void bajarNivelPartido(Partido partido) {
+        partido.setNivelPartido(new Intermedio());
     }
 }
