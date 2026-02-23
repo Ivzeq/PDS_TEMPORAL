@@ -8,7 +8,7 @@ public class Partido {
 
     private final AbstractDeporte deporte;
     private final int nJugadores;
-    private AbstractNivelDeporte nivelJugadores;
+    private IEstadoNivelDeporte nivelPartido;
     private final int duracion;
     private String codigoPostal;
     private Date horario;
@@ -17,10 +17,10 @@ public class Partido {
     private final Jugador organizador;
     private List<IObserverPartido> observers;
 
-    public Partido(AbstractDeporte deporte, AbstractNivelDeporte nivelDeporte, String codigoPostal, Date horario, Jugador organizador) {
+    public Partido(AbstractDeporte deporte, IEstadoNivelDeporte nivelDeporte, String codigoPostal, Date horario, Jugador organizador) {
         this.deporte = deporte;
         this.nJugadores = deporte.getCantidadJugadores();
-        this.nivelJugadores = nivelDeporte;
+        this.nivelPartido = nivelDeporte;
         this.duracion = deporte.getDuracionPartido();
         this.codigoPostal = codigoPostal;
         this.horario = horario;
@@ -32,7 +32,7 @@ public class Partido {
         agregarJugador(organizador);
     }
 
-    // Setters
+
 
     public void agregarJugador(Jugador jugador) {
         jugadores.add(jugador);
@@ -50,12 +50,30 @@ public class Partido {
         observers.remove(observer);
     }
 
+    public void avanzarEstado() {
+        estado.avanzarEstado(this);
+    }
+
+    public void cancelarPartido() {
+        estado.cancelarPartido(this);
+    }
+
+    public void subirNivel() {
+        nivelPartido.subirNivelPartido(this);
+    }
+
+    public void bajarNivel() {
+        nivelPartido.bajarNivelPartido(this);
+    }
+
+    // Setters
+
     public void setEstado(IEstadoPartido estado) {
         this.estado = estado;
     }
 
-    public void setNivelJugadores (AbstractNivelDeporte nivelJugadores) {
-        this.nivelJugadores = nivelJugadores;
+    public void setNivelPartido (IEstadoNivelDeporte nivelPartido) {
+        this.nivelPartido = nivelPartido;
     }
 
     public void setCodigoPostal (String codigoPostal) {
@@ -104,7 +122,7 @@ public class Partido {
         return duracion;
     }
 
-    public AbstractNivelDeporte getNivelJugadores() {
-        return nivelJugadores;
+    public IEstadoNivelDeporte getNivelPartido() {
+        return nivelPartido;
     }
 }

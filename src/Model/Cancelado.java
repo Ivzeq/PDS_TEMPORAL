@@ -7,11 +7,11 @@ public class Cancelado implements IEstadoPartido {
     
     @Override
     public void avanzarEstado(Partido partido) {
-        partido.setEstado(new Cancelado());
+        System.out.println("Partido en estado final Cancelado");
     }
 
     @Override
     public void cancelarPartido(Partido partido) {
-        partido.setEstado(new Cancelado());
+        System.out.println("Partido ya Cancelado");
     }
 }

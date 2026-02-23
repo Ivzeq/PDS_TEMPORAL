@@ -11,13 +11,13 @@ public class Jugador {
     private String username;
     private String password;
     private AbstractDeporte deporteFavorito;
-    private AbstractNivelDeporte nivelDeporteFavorito;
+    private IEstadoNivelDeporte nivelDeporteFavorito;
     private String codigoPostal;
     private int nPartidos;
     private List<Partido> partidosCompletados;
 
     public Jugador(String id, String nombre, String mail, String username, String password,
-                   AbstractDeporte deporteFavorito, String codigoPostal) {
+                   AbstractDeporte deporteFavorito, IEstadoNivelDeporte nivelDeporte, String codigoPostal) {
         this.id = id;
         this.nombre = nombre;
         this.mail = mail;
@@ -26,13 +26,13 @@ public class Jugador {
         this.deporteFavorito = deporteFavorito;
         this.codigoPostal = codigoPostal;
         this.nPartidos = 0;
-        this.nivelDeporteFavorito = new Principiante(this);
+        this.nivelDeporteFavorito = nivelDeporte;
         this.partidosCompletados = new ArrayList<>();
     }
 
     public Jugador(String id, String nombre, String mail, String username, String password,
                    String codigoPostal) {
-        this(id, nombre, mail, username, password, null, codigoPostal);
+        this(id, nombre, mail, username, password, null, null,  codigoPostal);
     }
 
     public void modificarMail(String mail) {
@@ -49,6 +49,14 @@ public class Jugador {
 
     public void addPartidoCompletado(Partido partido) {
         partidosCompletados.add(partido);
+    }
+
+    public void subirNivel() {
+        nivelDeporteFavorito.subirNivelJugador(this);
+    }
+
+    public void bajarNivel() {
+        nivelDeporteFavorito.bajarNivelJugador(this);
     }
 
     // Getters
@@ -77,7 +85,7 @@ public class Jugador {
         return deporteFavorito;
     }
 
-    public AbstractNivelDeporte getNivelDeporteFavorito() {
+    public IEstadoNivelDeporte getNivelDeporteFavorito() {
         return nivelDeporteFavorito;
     }
 
@@ -99,7 +107,7 @@ public class Jugador {
         this.deporteFavorito = deporteFavorito;
     }
 
-    public void setNivelDeporteFavorito(AbstractNivelDeporte nivelDeporteFavorito) {
+    public void setNivelDeporteFavorito(IEstadoNivelDeporte nivelDeporteFavorito) {
         this.nivelDeporteFavorito = nivelDeporteFavorito;
     }
 

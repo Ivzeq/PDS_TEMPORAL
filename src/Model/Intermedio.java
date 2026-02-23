@@ -1,18 +1,24 @@
 package Model;
 
-public class Intermedio extends AbstractNivelDeporte {
+public class Intermedio implements IEstadoNivelDeporte {
 
-    public Intermedio(Jugador jugador) {
-        super(jugador);
+    @Override
+    public void subirNivelJugador(Jugador jugador) {
+        jugador.setNivelDeporteFavorito(new Avanzado());
     }
 
     @Override
-    public void subirNivel() {
-        jugador.setNivelDeporteFavorito(new Avanzado(jugador));
+    public void bajarNivelJugador(Jugador jugador) {
+        jugador.setNivelDeporteFavorito(new Principiante());
     }
 
     @Override
-    public void bajarNivel() {
-        jugador.setNivelDeporteFavorito(new Principiante(jugador));
+    public void subirNivelPartido(Partido partido) {
+        partido.setNivelPartido(new Avanzado());
+    }
+
+    @Override
+    public void bajarNivelPartido(Partido partido) {
+        partido.setNivelPartido(new Principiante());
     }
 }

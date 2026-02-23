@@ -13,7 +13,7 @@ public class PorNivel implements IStrategyBuscadorPartidos{
 
         for (Partido partido : partidosAbiertos) {
             if (jugador.getNivelDeporteFavorito()
-                    .equals(partido.getNivelJugadores())) {
+                    .equals(partido.getNivelPartido())) {
                 partidosFiltro.add(partido);
             }
         }
