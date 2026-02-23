@@ -4,6 +4,8 @@ import Controller.JugadorController;
 import Controller.PartidoController;
 import Model.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -13,6 +15,7 @@ public class VistaConsola {
     private Scanner scanner;
     private JugadorController jugadorController;
     private PartidoController partidoController;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     public VistaConsola(JugadorController jugadorController, PartidoController partidoController) {
         this.scanner = new Scanner(System.in);
@@ -23,6 +26,8 @@ public class VistaConsola {
     public void mostrarMenuPrincipal() {
         boolean salir = false;
         while (!salir) {
+            partidoController.actualizarEstadosPorTiempo();
+
             System.out.println("\n========================================");
             System.out.println("   SISTEMA DE ENCUENTROS DEPORTIVOS");
             System.out.println("========================================");
@@ -175,8 +180,20 @@ public class VistaConsola {
         System.out.print("Codigo postal: ");
         String codigoPostal = leerEntrada();
 
-        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal, new Date(), organizador);
-        mostrarMensaje("Partido creado! Deporte: " + partido.getDeporte() + " | Estado: " + partido.getEstado());
+        System.out.print("Fecha y hora (dd/MM/yyyy HH:mm): ");
+        String fechaStr = leerEntrada();
+        Date horario;
+        try {
+            horario = sdf.parse(fechaStr);
+        } catch (ParseException e) {
+            mostrarMensaje("Formato de fecha invalido. Se usara la fecha actual.");
+            horario = new Date();
+        }
+
+        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal, horario, organizador);
+        mostrarMensaje("Partido creado! Deporte: " + partido.getDeporte()
+                + " | Horario: " + sdf.format(partido.getHorario())
+                + " | Estado: " + partido.getEstado());
     }
 
     public void mostrarBuscarPartidos() {
@@ -224,6 +241,8 @@ public class VistaConsola {
                 StringBuilder sb = new StringBuilder();
                 sb.append("  ").append(i + 1).append(". ").append(p.getDeporte());
                 sb.append(" en ").append(p.getUbicacion());
+                String horarioStr = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+                sb.append(" | ").append(horarioStr);
                 sb.append(" (").append(p.getJugadores().size()).append("/").append(p.getNJugadores()).append(" jugadores)");
                 sb.append(" | Organizador: ").append(p.getOrganizador().getUsername());
 
@@ -404,7 +423,9 @@ public class VistaConsola {
         System.out.println("Partidos:");
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
+            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
             System.out.println((i + 1) + ". " + p.getDeporte() + " en " + p.getUbicacion()
+                    + " | " + horario
                     + " [" + p.getEstado().getClass().getSimpleName() + "]"
                     + " (" + p.getJugadores().size() + "/" + p.getNJugadores() + ")"
                     + " | Organizador: " + p.getOrganizador().getUsername());
@@ -480,8 +501,11 @@ public class VistaConsola {
         }
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
+            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
             System.out.println("  " + (i + 1) + ". " + p.getDeporte()
                     + " | Ubicacion: " + p.getUbicacion()
+                    + " | Horario: " + horario
+                    + " | Duracion: " + p.getDuracion() + " min"
                     + " | Estado: " + p.getEstado().getClass().getSimpleName()
                     + " | Jugadores: " + p.getJugadores().size() + "/" + p.getNJugadores()
                     + " | Organizador: " + p.getOrganizador().getUsername());

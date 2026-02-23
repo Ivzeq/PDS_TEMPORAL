@@ -85,6 +85,26 @@ public class PartidoController {
         return buscadorPartidos.getStrategy().getClass().getSimpleName();
     }
 
+    public void actualizarEstadosPorTiempo() {
+        Date ahora = new Date();
+        for (Partido p : partidos) {
+            if (p.getHorario() == null) continue;
+
+            if (p.getEstado() instanceof Confirmado && !ahora.before(p.getHorario())) {
+                p.setEstado(new EnJuego());
+                notificacionController.notificarTodos(p,
+                        "El partido de " + p.getDeporte() + " en " + p.getUbicacion() + " ha comenzado!");
+            } else if (p.getEstado() instanceof EnJuego) {
+                long finMs = p.getHorario().getTime() + (long) p.getDuracion() * 60 * 1000;
+                if (ahora.getTime() >= finMs) {
+                    p.setEstado(new Finalizado());
+                    notificacionController.notificarTodos(p,
+                            "El partido de " + p.getDeporte() + " en " + p.getUbicacion() + " ha finalizado!");
+                }
+            }
+        }
+    }
+
     public List<Partido> getPartidos() {
         return partidos;
     }

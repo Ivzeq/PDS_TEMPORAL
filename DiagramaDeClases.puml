@@ -1,0 +1,466 @@
+@startuml DiagramaDeClases
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 50
+skinparam packageStyle rectangle
+
+title Diagrama de Clases - Sistema "Uno Mas"\n(sin Vista)
+
+' ============================================================
+'                        CONTROLLERS
+' ============================================================
+
+package "Controller" #DDDDDD {
+
+    class JugadorController {
+        - jugadores : List<Jugador>
+        - notificacionController : NotificacionController
+        + JugadorController(notificacionController : NotificacionController)
+        + registrarJugador(nombre : String, mail : String, username : String, password : String, deporteFavorito : AbstractDeporte, codigoPostal : String) : Jugador
+        + modificarMail(jugador : Jugador, mail : String) : void
+        + modificarPassword(jugador : Jugador, password : String) : void
+        + setDeporteFavoritoJugador(jugador : Jugador, deporte : AbstractDeporte) : void
+        + setNotificadorJugador(jugador : Jugador, strategy : IStrategyNotificador) : void
+        + subirNivel(jugador : Jugador) : void
+        + bajarNivel(jugador : Jugador) : void
+        + buscarJugadorPorUsername(username : String) : Jugador
+        + getJugadores() : List<Jugador>
+    }
+
+    class PartidoController {
+        - partidos : List<Partido>
+        - buscadorPartidos : BuscadorPartidos
+        - notificacionController : NotificacionController
+        + PartidoController(buscadorPartidos : BuscadorPartidos, notificacionController : NotificacionController)
+        + crearPartido(deporte : AbstractDeporte, nJugadores : int, nivelJugadores : AbstractNivelDeporte, duracion : int, ubicacion : String, codigoPostal : String, horario : Date, organizador : Jugador) : Partido
+        + agregarJugador(partido : Partido, jugador : Jugador) : boolean
+        + removerJugador(partido : Partido, jugador : Jugador) : void
+        + avanzarEstado(partido : Partido) : void
+        + cancelarPartido(partido : Partido) : void
+        + buscarPartidos(jugador : Jugador) : List<Partido>
+        + buscarTodosPartidos(jugador : Jugador) : List<Partido>
+        + cambiarStrategyBuscador(strategy : IStrategyBuscadorPartidos) : void
+        + getNombreStrategyBuscador() : String
+        + getPartidos() : List<Partido>
+    }
+
+    class NotificacionController {
+        - notificadores : List<Notificador>
+        + NotificacionController()
+        + agregarNotificador(notificador : Notificador) : void
+        + removerNotificador(notificador : Notificador) : void
+        + notificarJugador(jugador : Jugador, mensaje : String) : void
+        + notificarTodos(partido : Partido, mensaje : String) : void
+        + cambiarStrategyNotificador(notificador : Notificador, strategy : IStrategyNotificador) : void
+    }
+}
+
+' ============================================================
+'                    MODEL – Entidades principales
+' ============================================================
+
+package "Model" #EEEEFF {
+
+    class Jugador {
+        - {static} nextId : int = 1
+        - id : String
+        - nombre : String
+        - mail : String
+        - username : String
+        - password : String
+        - deporteFavorito : AbstractDeporte
+        - nivelDeporteFavorito : AbstractNivelDeporte
+        - codigoPostal : String
+        - nPartidos : int
+        - notificador : Notificador
+        + Jugador(nombre : String, mail : String, username : String, password : String, deporteFavorito : AbstractDeporte, codigoPostal : String)
+        + modificarMail(mail : String) : void
+        + modificarPassword(password : String) : void
+        + confirmarPartido() : void
+        + getId() : String
+        + getNombre() : String
+        + getMail() : String
+        + getUsername() : String
+        + getPassword() : String
+        + getDeporteFavorito() : AbstractDeporte
+        + getNivelDeporteFavorito() : AbstractNivelDeporte
+        + getCodigoPostal() : String
+        + getNPartidos() : int
+        + getNotificador() : Notificador
+        + setDeporteFavorito(deporteFavorito : AbstractDeporte) : void
+        + setNivelDeporteFavorito(nivelDeporteFavorito : AbstractNivelDeporte) : void
+        + setCodigoPostal(codigoPostal : String) : void
+        + setNotificador(notificador : Notificador) : void
+        + toString() : String
+    }
+
+    class Partido {
+        - deporte : AbstractDeporte
+        - nJugadores : int
+        - nivelJugadores : AbstractNivelDeporte
+        - duracion : int
+        - ubicacion : String
+        - codigoPostal : String
+        - horario : Date
+        - estado : IEstadoPartido
+        - jugadores : List<Jugador>
+        - organizador : Jugador
+        - observers : List<IObserverPartido>
+        + Partido()
+        + avanzarEstado() : void
+        + agregarJugador(jugador : Jugador) : boolean
+        + removerJugador(jugador : Jugador) : void
+        - notificarObservers() : void
+        + agregarObserver(observer : IObserverPartido) : void
+        + removerObserver(observer : IObserverPartido) : void
+        + getDeporte() : AbstractDeporte
+        + getEstado() : IEstadoPartido
+        + getJugadores() : List<Jugador>
+        + getOrganizador() : Jugador
+        + getObservers() : List<IObserverPartido>
+        + getNJugadores() : int
+        + getUbicacion() : String
+        + getCodigoPostal() : String
+        + getHorario() : String
+        + getDuracion() : int
+        + getNivelJugadores() : AbstractNivelDeporte
+        + setDeporte(deporte : AbstractDeporte) : void
+        + setNJugadores(nJugadores : int) : void
+        + setNivelJugadores(nivelJugadores : AbstractNivelDeporte) : void
+        + setDuracion(duracion : int) : void
+        + setUbicacion(ubicacion : String) : void
+        + setCodigoPostal(codigoPostal : String) : void
+        + setHorario(horario : Date) : void
+        + setEstado(estado : IEstadoPartido) : void
+        + setOrganizador(organizador : Jugador) : void
+    }
+
+    class Notificacion {
+        - mensaje : String
+        - destinatario : Jugador
+        + Notificacion(mensaje : String, destinatario : Jugador)
+        + getMensaje() : String
+        + setMensaje(mensaje : String) : void
+        + getDestinatario() : Jugador
+        + setDestinatario(destinatario : Jugador) : void
+        + toString() : String
+    }
+
+    ' ============================================================
+    '         Strategy Pattern – Buscador de Partidos
+    ' ============================================================
+
+    interface IStrategyBuscadorPartidos <<Strategy>> {
+        + buscarPartidos(partidos : List<Partido>, jugador : Jugador) : List<Partido>
+    }
+
+    class BuscadorPartidos <<Context>> {
+        - strategy : IStrategyBuscadorPartidos
+        + BuscadorPartidos()
+        + buscarPartidos(partidos : List<Partido>, jugador : Jugador) : List<Partido>
+        + cambiarStrategy(strategy : IStrategyBuscadorPartidos) : void
+        + getStrategy() : IStrategyBuscadorPartidos
+    }
+
+    class PorHistorial <<ConcreteStrategy>> {
+        + buscarPartidos(partidos : List<Partido>, jugador : Jugador) : List<Partido>
+    }
+
+    class PorNivel <<ConcreteStrategy>> {
+        + buscarPartidos(partidos : List<Partido>, jugador : Jugador) : List<Partido>
+    }
+
+    class PorUbicacion <<ConcreteStrategy>> {
+        + buscarPartidos(partidos : List<Partido>, jugador : Jugador) : List<Partido>
+    }
+
+    ' ============================================================
+    '         Strategy Pattern – Notificador
+    ' ============================================================
+
+    interface IStrategyNotificador <<Strategy>> {
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    class Notificador <<Context / Observer>> {
+        - strategy : IStrategyNotificador
+        + Notificador(strategy : IStrategyNotificador)
+        + enviarNotificacion(notificacion : Notificacion) : void
+        + cambiarStrategy(strategy : IStrategyNotificador) : void
+        + getStrategy() : IStrategyNotificador
+        + update(partido : Partido) : void
+    }
+
+    class Push <<ConcreteStrategy>> {
+        - adapterFirebase : IAdapterFirebase
+        + Push(adapterFirebase : IAdapterFirebase)
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    class CorreoElectronico <<ConcreteStrategy>> {
+        - adapterJavaMail : IAdapterJavaMail
+        + CorreoElectronico(adapterJavaMail : IAdapterJavaMail)
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    ' ============================================================
+    '         Adapter Pattern – Servicios externos
+    ' ============================================================
+
+    interface IAdapterFirebase <<Target>> {
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    interface IAdapterJavaMail <<Target>> {
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    class Firebase <<Adapter>> {
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    class JavaMail <<Adapter>> {
+        - smtpHost : String
+        - smtpPort : int
+        - remitente : String
+        - password : String
+        + JavaMail(smtpHost : String, smtpPort : int, remitente : String, password : String)
+        + enviarNotificacion(notificacion : Notificacion) : void
+    }
+
+    ' ============================================================
+    '         State Pattern – Estado del Partido
+    ' ============================================================
+
+    interface IEstadoPartido <<State>> {
+        + avanzarEstado(partido : Partido) : void
+    }
+
+    class NecesitamosJugadores <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    class PartidoArmado <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    class Confirmado <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    class EnJuego <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    class Finalizado <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    class Cancelado <<ConcreteState>> {
+        + avanzarEstado(partido : Partido) : void
+        + toString() : String
+    }
+
+    ' ============================================================
+    '         Observer Pattern
+    ' ============================================================
+
+    interface IObserverPartido <<Observer>> {
+        + update(partido : Partido) : void
+    }
+
+    ' ============================================================
+    '         Herencia – Deportes
+    ' ============================================================
+
+    abstract class AbstractDeporte {
+        - duracionPartido : int
+        - cantidadJugadores : int
+        + AbstractDeporte(duracionPartido : int, cantidadJugadores : int)
+        + getDuracionPartido() : int
+        + setDuracionPartido(duracionPartido : int) : void
+        + getCantidadJugadores() : int
+        + setCantidadJugadores(cantidadJugadores : int) : void
+        + toString() : String
+    }
+
+    class Futbol {
+        + Futbol()
+        + Futbol(duracionPartido : int, cantidadJugadores : int)
+    }
+
+    class Basquet {
+        + Basquet()
+        + Basquet(duracionPartido : int, cantidadJugadores : int)
+    }
+
+    class Voley {
+        + Voley()
+        + Voley(duracionPartido : int, cantidadJugadores : int)
+    }
+
+    ' ============================================================
+    '         State Pattern – Nivel de Deporte del Jugador
+    ' ============================================================
+
+    abstract class AbstractNivelDeporte <<State>> {
+        # jugador : Jugador
+        + AbstractNivelDeporte(jugador : Jugador)
+        + subirNivel() : void
+        + bajarNivel() : void
+        + getJugador() : Jugador
+        + setJugador(jugador : Jugador) : void
+        + toString() : String
+    }
+
+    class Principiante <<ConcreteState>> {
+        - maxPartidos : int
+        + Principiante(jugador : Jugador)
+        + Principiante(jugador : Jugador, maxPartidos : int)
+        + subirNivel() : void
+        + getMaxPartidos() : int
+        + setMaxPartidos(maxPartidos : int) : void
+    }
+
+    class Intermedio <<ConcreteState>> {
+        + Intermedio(jugador : Jugador)
+        + subirNivel() : void
+        + bajarNivel() : void
+    }
+
+    class Avanzado <<ConcreteState>> {
+        + Avanzado(jugador : Jugador)
+        + bajarNivel() : void
+    }
+
+    ' ============================================================
+    '         Clase vacia (presente en codigo fuente)
+    ' ============================================================
+
+    class EstadoPartido {
+    }
+}
+
+' ============================================================
+'                      RELACIONES
+' ============================================================
+
+' --- Controller -> Controller ---
+JugadorController "1" --> "1" NotificacionController : usa >
+PartidoController "1" --> "1" NotificacionController : usa >
+
+' --- Controller -> Model ---
+JugadorController "1" o-- "0..*" Jugador : gestiona >
+PartidoController "1" o-- "0..*" Partido : gestiona >
+PartidoController "1" --> "1" BuscadorPartidos : usa >
+NotificacionController "1" o-- "0..*" Notificador : gestiona >
+
+' --- Strategy Pattern: BuscadorPartidos ---
+BuscadorPartidos "1" --> "1" IStrategyBuscadorPartidos : "estrategia actual"
+IStrategyBuscadorPartidos <|.. PorHistorial
+IStrategyBuscadorPartidos <|.. PorNivel
+IStrategyBuscadorPartidos <|.. PorUbicacion
+
+' --- Strategy Pattern: Notificador ---
+Notificador "1" --> "1" IStrategyNotificador : "estrategia actual"
+IStrategyNotificador <|.. Push
+IStrategyNotificador <|.. CorreoElectronico
+
+' --- Adapter Pattern ---
+Push "1" --> "1" IAdapterFirebase : "adapta"
+CorreoElectronico "1" --> "1" IAdapterJavaMail : "adapta"
+IAdapterFirebase <|.. Firebase
+IAdapterJavaMail <|.. JavaMail
+
+' --- State Pattern: Partido ---
+Partido "1" --> "1" IEstadoPartido : "estado actual"
+IEstadoPartido <|.. NecesitamosJugadores
+IEstadoPartido <|.. PartidoArmado
+IEstadoPartido <|.. Confirmado
+IEstadoPartido <|.. EnJuego
+IEstadoPartido <|.. Finalizado
+IEstadoPartido <|.. Cancelado
+
+' --- Observer Pattern ---
+Partido "1" o-- "0..*" IObserverPartido : "observadores"
+IObserverPartido <|.. Notificador
+
+' --- State Pattern: NivelDeporte ---
+Jugador "1" --> "1" AbstractNivelDeporte : "nivel actual"
+AbstractNivelDeporte <|-- Principiante
+AbstractNivelDeporte <|-- Intermedio
+AbstractNivelDeporte <|-- Avanzado
+AbstractNivelDeporte "1" --> "1" Jugador : "referencia a"
+
+' --- Herencia Deportes ---
+AbstractDeporte <|-- Futbol
+AbstractDeporte <|-- Basquet
+AbstractDeporte <|-- Voley
+
+' --- Jugador associations ---
+Jugador "1" --> "1" AbstractDeporte : "deporte favorito"
+Jugador "1" --> "0..1" Notificador : "notificador preferido"
+
+' --- Partido associations ---
+Partido "1" --> "1" AbstractDeporte : "deporte del partido"
+Partido "0..*" o-- "0..*" Jugador : "jugadores"
+Partido "1" --> "1" Jugador : "organizador"
+Partido "1" --> "0..1" AbstractNivelDeporte : "nivel requerido"
+
+' --- Notificacion ---
+Notificacion "1" --> "1" Jugador : "destinatario"
+
+' ============================================================
+'              NOTAS – Patrones de Diseño
+' ============================================================
+
+note top of BuscadorPartidos
+  **Strategy Pattern**
+  Permite cambiar el algoritmo
+  de busqueda de partidos
+  en tiempo de ejecución.
+end note
+
+note top of Notificador
+  **Strategy Pattern + Observer Pattern**
+  Usa una estrategia para enviar
+  notificaciones (Push o Email).
+  Implementa Observer para recibir
+  actualizaciones de Partido.
+end note
+
+note right of IEstadoPartido
+  **State Pattern**
+  Define las transiciones de
+  estado del ciclo de vida
+  de un Partido.
+end note
+
+note bottom of AbstractNivelDeporte
+  **State Pattern**
+  El nivel del jugador cambia
+  de estado entre Principiante,
+  Intermedio y Avanzado.
+end note
+
+note right of IAdapterFirebase
+  **Adapter Pattern**
+  Adapta servicios externos
+  (Firebase, JavaMail) a una
+  interfaz comun de notificación.
+end note
+
+note right of Partido
+  **Observer Pattern (Subject)**
+  Notifica a sus observers
+  cuando cambia su estado.
+end note
+
+@enduml

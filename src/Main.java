@@ -6,6 +6,7 @@ import View.VistaConsola;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
@@ -87,28 +88,61 @@ public class Main {
         jugadorController.subirNivel(pablo); // Intermedio
         jugadorController.subirNivel(pablo); // Avanzado
 
-        // --- Partidos ---
+        // --- Partidos (con fechas futuras) ---
+        Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.HOUR_OF_DAY, 2);
+        Date enDosHoras = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR_OF_DAY, 5);
+        Date enCincoHoras = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 18);
+        cal.set(Calendar.MINUTE, 0);
+        Date maniana18 = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 20);
+        cal.set(Calendar.MINUTE, 30);
+        Date maniana2030 = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        cal.set(Calendar.HOUR_OF_DAY, 10);
+        cal.set(Calendar.MINUTE, 0);
+        Date pasadoManiana10 = cal.getTime();
+
+        cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 2);
+        cal.set(Calendar.HOUR_OF_DAY, 16);
+        cal.set(Calendar.MINUTE, 0);
+        Date pasadoManiana16 = cal.getTime();
+
         Partido futbol5Zona1 = partidoController.crearPartido(new Futbol(), 10, null, 90,
-                "Cancha Central", "1824", new Date(), juan);
+                "Cancha Central", "1824", enDosHoras, juan);
         partidoController.agregarJugador(futbol5Zona1, pablo);
         partidoController.agregarJugador(futbol5Zona1, diego);
 
         partidoController.crearPartido(new Futbol(), 6, null, 60,
-                "Cancha Los Amigos", "1830", new Date(), valentina);
+                "Cancha Los Amigos", "1830", maniana18, valentina);
 
         Partido basquetZona2 = partidoController.crearPartido(new Basquet(), 6, null, 40,
-                "Club Deportivo Norte", "1830", new Date(), maria);
+                "Club Deportivo Norte", "1830", enCincoHoras, maria);
         partidoController.agregarJugador(basquetZona2, sofia);
 
         partidoController.crearPartido(new Basquet(), 4, null, 30,
-                "Polideportivo Sur", "1824", new Date(), martin);
+                "Polideportivo Sur", "1824", maniana2030, martin);
 
         Partido voleyZona2 = partidoController.crearPartido(new Voley(), 8, null, 50,
-                "Playa Deportiva", "1830", new Date(), carlos);
+                "Playa Deportiva", "1830", pasadoManiana10, carlos);
         partidoController.agregarJugador(voleyZona2, andres);
 
         partidoController.crearPartido(new Voley(), 6, null, 45,
-                "Club El Sol", "1824", new Date(), camila);
+                "Club El Sol", "1824", pasadoManiana16, camila);
 
         System.out.println("=== Datos iniciales cargados ===");
         System.out.println("Jugadores: " + jugadorController.getJugadores().size());
