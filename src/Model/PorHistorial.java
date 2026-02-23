@@ -1,26 +1,10 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+public class PorHistorial implements IStrategyBuscadorPartidos {
 
-/**
- * 
- */
-public class PorHistorial {
-
-    /**
-     * Default constructor
-     */
-    public PorHistorial() {
-    }
-
-
-    /**
-     * @return
-     */
+    @Override
     public Partido buscarPartido() {
-        // TODO implement here
+        System.out.println("[BuscadorPartidos] Buscando partido por historial...");
         return null;
     }
-
 }

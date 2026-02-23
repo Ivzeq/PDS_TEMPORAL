@@ -1,26 +1,10 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+public class PorUbicacion implements IStrategyBuscadorPartidos {
 
-/**
- * 
- */
-public class PorUbicacion {
-
-    /**
-     * Default constructor
-     */
-    public PorUbicacion() {
-    }
-
-
-    /**
-     * @return
-     */
+    @Override
     public Partido buscarPartido() {
-        // TODO implement here
+        System.out.println("[BuscadorPartidos] Buscando partido por ubicacion...");
         return null;
     }
-
 }

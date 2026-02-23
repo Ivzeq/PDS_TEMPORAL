@@ -1,24 +1,14 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class EnJuego implements IEstadoPartido {
 
-    /**
-     * Default constructor
-     */
-    public EnJuego() {
+    @Override
+    public void avanzarEstado(Partido partido) {
+        partido.setEstado(new Finalizado());
     }
 
-
-    /**
-     * @return
-     */
-    public void avanzarEstado() {
-        // TODO implement here
+    @Override
+    public String toString() {
+        return "En Juego";
     }
 }

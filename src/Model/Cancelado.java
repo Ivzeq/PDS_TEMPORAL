@@ -1,25 +1,14 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
-
-/**
- * 
- */
 public class Cancelado implements IEstadoPartido {
 
-    /**
-     * Default constructor
-     */
-    public Cancelado() {
+    @Override
+    public void avanzarEstado(Partido partido) {
+        System.out.println("El partido fue cancelado, no se puede avanzar.");
     }
 
-
-    /**
-     * @return
-     */
-    public void avanzarEstado() {
-        // TODO implement IEstadoPartido.avanzarEstado() here
+    @Override
+    public String toString() {
+        return "Cancelado";
     }
-
 }
