@@ -1,26 +1,10 @@
 package Model;
 
-import java.io.*;
-import java.util.*;
+public class PorNivel implements IStrategyBuscadorPartidos {
 
-/**
- * 
- */
-public class PorNivel {
-
-    /**
-     * Default constructor
-     */
-    public PorNivel() {
-    }
-
-
-    /**
-     * @return
-     */
+    @Override
     public Partido buscarPartido() {
-        // TODO implement here
+        System.out.println("[BuscadorPartidos] Buscando partido por nivel...");
         return null;
     }
-
 }
