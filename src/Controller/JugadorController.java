@@ -4,22 +4,30 @@ import Model.AbstractDeporte;
 import Model.IStrategyNotificador;
 import Model.Jugador;
 import Model.Notificador;
+import Repository.InMemoryJugadorRepository;
+import Repository.IJugadorRepository;
+import service.JugadorAuthService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class JugadorController {
 
-    private List<Jugador> jugadores;
+    private IJugadorRepository jugadorRepository;
+    private JugadorAuthService authService;
 
     public JugadorController() {
-        this.jugadores = new ArrayList<>();
+        this(new InMemoryJugadorRepository());
+    }
+
+    public JugadorController(IJugadorRepository repository) {
+        this.jugadorRepository = repository;
+        this.authService = new JugadorAuthService();
     }
 
     public Jugador registrarJugador(String nombre, String mail, String username,
                                     String password, AbstractDeporte deporteFavorito, String codigoPostal) {
         Jugador jugador = new Jugador(nombre, mail, username, password, deporteFavorito, codigoPostal);
-        jugadores.add(jugador);
+        jugadorRepository.save(jugador);
         return jugador;
     }
 
@@ -48,15 +56,14 @@ public class JugadorController {
     }
 
     public Jugador buscarJugadorPorUsername(String username) {
-        for (Jugador jugador : jugadores) {
-            if (jugador.getUsername().equals(username)) {
-                return jugador;
-            }
-        }
-        return null;
+        return jugadorRepository.findByUsername(username);
     }
 
     public List<Jugador> getJugadores() {
-        return jugadores;
+        return jugadorRepository.findAll();
+    }
+
+    public Jugador autenticarJugador(String username, String password) {
+        return authService.autenticarJugador(jugadorRepository, username, password);
     }
 }

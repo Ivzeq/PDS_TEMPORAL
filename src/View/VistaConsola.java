@@ -4,9 +4,8 @@ import Controller.JugadorController;
 import Controller.PartidoController;
 import Model.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,12 +14,14 @@ public class VistaConsola {
     private Scanner scanner;
     private JugadorController jugadorController;
     private PartidoController partidoController;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private Jugador jugadorLogeado;
+    private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    public VistaConsola(JugadorController jugadorController, PartidoController partidoController) {
+    public VistaConsola(JugadorController jugadorController, PartidoController partidoController, Jugador jugadorLogeado) {
         this.scanner = new Scanner(System.in);
         this.jugadorController = jugadorController;
         this.partidoController = partidoController;
+        this.jugadorLogeado = jugadorLogeado;
     }
 
     public void mostrarMenuPrincipal() {
@@ -30,6 +31,7 @@ public class VistaConsola {
 
             System.out.println("\n========================================");
             System.out.println("   SISTEMA DE ENCUENTROS DEPORTIVOS");
+            System.out.println("   Logeado como: " + jugadorLogeado.getUsername());
             System.out.println("========================================");
             System.out.println("1. Registrar jugador");
             System.out.println("2. Crear partido");
@@ -200,44 +202,26 @@ public class VistaConsola {
 
         System.out.print("Fecha y hora (dd/MM/yyyy HH:mm): ");
         String fechaStr = leerEntrada();
-        Date horario;
+        LocalDateTime horario;
         try {
-            horario = sdf.parse(fechaStr);
-        } catch (ParseException e) {
-            mostrarMensaje("Formato de fecha invalido. Se usara la fecha actual.");
-            horario = new Date();
+            horario = LocalDateTime.parse(fechaStr, dtf);
+        } catch (Exception e) {
+            mostrarMensaje("Formato de fecha invalido. Se usara la fecha y hora actual.");
+            horario = LocalDateTime.now();
         }
 
         Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal,
                 horario, organizador);
         mostrarMensaje("Partido creado! Deporte: " + partido.getDeporte()
-                + " | Horario: " + sdf.format(partido.getHorario())
+                + " | Horario: " + partido.getHorario().format(dtf)
                 + " | Estado: " + partido.getEstado());
     }
 
     public void mostrarBuscarPartidos() {
-        System.out.println("\n--- Buscar Partidos ---");
-
-        List<Jugador> jugadores = jugadorController.getJugadores();
-        if (jugadores.isEmpty()) {
-            mostrarMensaje("No hay jugadores registrados.");
-            return;
-        }
-
-        System.out.println("Quien busca partido?");
-        for (int i = 0; i < jugadores.size(); i++) {
-            System.out.println((i + 1) + ". " + jugadores.get(i).getUsername());
-        }
-        System.out.print("Seleccione jugador: ");
-        int index = Integer.parseInt(leerEntrada()) - 1;
-        if (index < 0 || index >= jugadores.size()) {
-            mostrarMensaje("Seleccion invalida.");
-            return;
-        }
-        Jugador jugador = jugadores.get(index);
+        System.out.println("\n--- Buscar Partidos (" + jugadorLogeado.getUsername() + ") ---");
 
         System.out.println("Buscar:");
-        System.out.println("1. Solo partidos de " + jugador.getDeporteFavorito() + " (mi deporte favorito)");
+        System.out.println("1. Solo partidos de " + jugadorLogeado.getDeporteFavorito() + " (mi deporte favorito)");
         System.out.println("2. Todos los deportes");
         System.out.print("Seleccione: ");
         String filtro = leerEntrada();
@@ -245,10 +229,10 @@ public class VistaConsola {
         String strategyActual = partidoController.getNombreStrategyBuscador();
         List<Partido> encontrados;
         if (filtro.equals("2")) {
-            encontrados = partidoController.buscarTodosPartidos(jugador);
+            encontrados = partidoController.buscarTodosPartidos(jugadorLogeado);
             strategyActual = "Todos";
         } else {
-            encontrados = partidoController.buscarPartidos(jugador);
+            encontrados = partidoController.buscarPartidos(jugadorLogeado);
         }
 
         if (encontrados.isEmpty()) {
@@ -260,7 +244,7 @@ public class VistaConsola {
                 StringBuilder sb = new StringBuilder();
                 sb.append("  ").append(i + 1).append(". ").append(p.getDeporte());
                 sb.append(" en ").append(p.getUbicacion());
-                String horarioStr = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+                String horarioStr = p.getHorario() != null ? p.getHorario().format(dtf) : "Sin definir";
                 sb.append(" | ").append(horarioStr);
                 sb.append(" (").append(p.getJugadores().size()).append("/").append(p.getNJugadores())
                         .append(" jugadores)");
@@ -292,7 +276,7 @@ public class VistaConsola {
                 if (partidoIndex < 0 || partidoIndex >= encontrados.size()) {
                     mostrarMensaje("Seleccion invalida.");
                 } else {
-                    boolean ok = partidoController.agregarJugador(encontrados.get(partidoIndex), jugador);
+                    boolean ok = partidoController.agregarJugador(encontrados.get(partidoIndex), jugadorLogeado);
                     if (ok) {
                         mostrarMensaje("Te uniste al partido!");
                     } else {
@@ -450,7 +434,7 @@ public class VistaConsola {
         System.out.println("Partidos:");
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
-            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+            String horario = p.getHorario() != null ? p.getHorario().format(dtf) : "Sin definir";
             System.out.println((i + 1) + ". " + p.getDeporte() + " en " + p.getUbicacion()
                     + " | " + horario
                     + " [" + p.getEstado().getClass().getSimpleName() + "]"
@@ -521,31 +505,13 @@ public class VistaConsola {
     }
 
     private void mostrarConfirmarAsistencia() {
-        System.out.println("\n--- Confirmar Asistencia a Partido ---");
-
-        List<Jugador> jugadores = jugadorController.getJugadores();
-        if (jugadores.isEmpty()) {
-            mostrarMensaje("No hay jugadores registrados.");
-            return;
-        }
-
-        System.out.println("Quien eres?");
-        for (int i = 0; i < jugadores.size(); i++) {
-            System.out.println((i + 1) + ". " + jugadores.get(i).getUsername());
-        }
-        System.out.print("Seleccione jugador: ");
-        int jIndex = Integer.parseInt(leerEntrada()) - 1;
-        if (jIndex < 0 || jIndex >= jugadores.size()) {
-            mostrarMensaje("Seleccion invalida.");
-            return;
-        }
-        Jugador jugador = jugadores.get(jIndex);
+        System.out.println("\n--- Confirmar Asistencia a Partido (" + jugadorLogeado.getUsername() + ") ---");
 
         List<Partido> partidosPendientes = new java.util.ArrayList<>();
         for (Partido p : partidoController.getPartidos()) {
             if (p.getEstado() instanceof PartidoArmado
-                    && p.getJugadores().contains(jugador)
-                    && !p.isConfirmado(jugador)) {
+                    && p.getJugadores().contains(jugadorLogeado)
+                    && !p.isConfirmado(jugadorLogeado)) {
                 partidosPendientes.add(p);
             }
         }
@@ -558,7 +524,7 @@ public class VistaConsola {
         System.out.println("Partidos esperando tu confirmacion:");
         for (int i = 0; i < partidosPendientes.size(); i++) {
             Partido p = partidosPendientes.get(i);
-            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+            String horario = p.getHorario() != null ? p.getHorario().format(dtf) : "Sin definir";
             System.out.println("  " + (i + 1) + ". " + p.getDeporte()
                     + " en " + p.getUbicacion()
                     + " | " + horario
@@ -581,7 +547,7 @@ public class VistaConsola {
 
         switch (opcion) {
             case "1":
-                boolean ok = partidoController.confirmarAsistencia(partido, jugador);
+                boolean ok = partidoController.confirmarAsistencia(partido, jugadorLogeado);
                 if (ok) {
                     mostrarMensaje("Asistencia confirmada!");
                     if (partido.todosConfirmados()) {
@@ -595,7 +561,7 @@ public class VistaConsola {
                 }
                 break;
             case "2":
-                partidoController.rechazarAsistencia(partido, jugador);
+                partidoController.rechazarAsistencia(partido, jugadorLogeado);
                 mostrarMensaje("Fuiste removido del partido. El partido vuelve a buscar jugadores.");
                 break;
             default:
@@ -612,7 +578,7 @@ public class VistaConsola {
         }
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
-            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+            String horario = p.getHorario() != null ? p.getHorario().format(dtf) : "Sin definir";
             String confirmInfo = "";
             if (p.getEstado() instanceof PartidoArmado) {
                 confirmInfo = " | Confirmados: " + p.getJugadoresConfirmados().size() + "/" + p.getNJugadores();

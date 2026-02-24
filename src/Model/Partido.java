@@ -1,7 +1,7 @@
 package Model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +14,7 @@ public class Partido {
     private int duracion;
     private String ubicacion;
     private String codigoPostal;
-    private Date horario;
+    private LocalDateTime horario;
     private IEstadoPartido estado;
     private List<Jugador> jugadores;
     private Jugador organizador;
@@ -39,6 +39,10 @@ public class Partido {
         }
         if (jugadores.size() < nJugadores) {
             jugadores.add(jugador);
+            // Registrar el notificador del jugador como observer
+            if (jugador.getNotificador() != null) {
+                agregarObserver(jugador.getNotificador());
+            }
             if (jugadores.size() == nJugadores && estado instanceof NecesitamosJugadores) {
                 avanzarEstado();
             }
@@ -122,7 +126,7 @@ public class Partido {
         return codigoPostal;
     }
 
-    public Date getHorario() {
+    public LocalDateTime getHorario() {
         return horario;
     }
 
@@ -160,7 +164,7 @@ public class Partido {
         this.codigoPostal = codigoPostal;
     }
 
-    public void setHorario(Date horario) {
+    public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
 

@@ -6,9 +6,9 @@ import View.VistaConsola;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -37,7 +37,7 @@ public class Main {
         PartidoController partidoController = new PartidoController(buscadorPartidos, notificacionController);
 
         // --- Jugadores ---
-        Jugador juan = jugadorController.registrarJugador("Juan Perez", "juan@mail.com", "juanp", "pass123",
+        Jugador juan = jugadorController.registrarJugador("Juan Perez", "shinfin12@gmail.com", "juanp", "pass123",
                 new Futbol(), "1824");
         Jugador maria = jugadorController.registrarJugador("Maria Lopez", "maria@mail.com", "marial", "pass456",
                 new Basquet(), "1830");
@@ -63,11 +63,11 @@ public class Main {
                 new Futbol(), "1824");
 
         // Notificadores
-        jugadorController.setNotificadorJugador(juan, strategyPush);
+        jugadorController.setNotificadorJugador(gianluca, strategyPush);
         jugadorController.setNotificadorJugador(maria, strategyPush);
         jugadorController.setNotificadorJugador(carlos, strategyPush);
         jugadorController.setNotificadorJugador(lucia, strategyPush);
-        jugadorController.setNotificadorJugador(gianluca, new CorreoElectronico(new JavaMail(
+        jugadorController.setNotificadorJugador(juan, new CorreoElectronico(new JavaMail(
                 "smtp.gmail.com", 465, "shinfin12@gmail.com", "ruih pjwx wgob lbye")));
         jugadorController.setNotificadorJugador(pablo, strategyPush);
         jugadorController.setNotificadorJugador(sofia, strategyPush);
@@ -86,38 +86,13 @@ public class Main {
         jugadorController.subirNivel(pablo); // Avanzado
 
         // --- Partidos (con fechas futuras) ---
-        Calendar cal = Calendar.getInstance();
-
-        cal.add(Calendar.HOUR_OF_DAY, 2);
-        Date enDosHoras = cal.getTime();
-
-        cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR_OF_DAY, 5);
-        Date enCincoHoras = cal.getTime();
-
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 18);
-        cal.set(Calendar.MINUTE, 0);
-        Date maniana18 = cal.getTime();
-
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 20);
-        cal.set(Calendar.MINUTE, 30);
-        Date maniana2030 = cal.getTime();
-
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 2);
-        cal.set(Calendar.HOUR_OF_DAY, 10);
-        cal.set(Calendar.MINUTE, 0);
-        Date pasadoManiana10 = cal.getTime();
-
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 2);
-        cal.set(Calendar.HOUR_OF_DAY, 16);
-        cal.set(Calendar.MINUTE, 0);
-        Date pasadoManiana16 = cal.getTime();
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime enDosHoras = ahora.plusHours(2);
+        LocalDateTime enCincoHoras = ahora.plusHours(5);
+        LocalDateTime maniana18 = ahora.plusDays(1).withHour(18).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime maniana2030 = ahora.plusDays(1).withHour(20).withMinute(30).withSecond(0).withNano(0);
+        LocalDateTime pasadoManiana10 = ahora.plusDays(2).withHour(10).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime pasadoManiana16 = ahora.plusDays(2).withHour(16).withMinute(0).withSecond(0).withNano(0);
 
         Partido futbol5Zona1 = partidoController.crearPartido(new Futbol(), 10, null, 90,
                 "Cancha Central", "1824", enDosHoras, juan);
@@ -141,12 +116,139 @@ public class Main {
         partidoController.crearPartido(new Voley(), 6, null, 45,
                 "Club El Sol", "1824", pasadoManiana16, camila);
 
+        // Partido para hoy + 1 minuto
+        LocalDateTime hoySumaUnMinuto = ahora.plusMinutes(1);
+        partidoController.crearPartido(new Futbol(), 8, null, 60,
+                "Cancha Rapida", "1824", hoySumaUnMinuto, lucia);
+
         System.out.println("=== Datos iniciales cargados ===");
         System.out.println("Jugadores: " + jugadorController.getJugadores().size());
         System.out.println("Partidos: " + partidoController.getPartidos().size());
         System.out.println();
 
-        VistaConsola vista = new VistaConsola(jugadorController, partidoController);
-        vista.mostrarMenuPrincipal();
+        // Menu inicial
+        Jugador jugadorLogeado = null;
+        boolean salir = false;
+        
+        Scanner scanner = new Scanner(System.in);
+        try {
+            while (!salir) {
+                System.out.println("\n========================================");
+                System.out.println("   SISTEMA DE ENCUENTROS DEPORTIVOS");
+                System.out.println("========================================");
+                System.out.println("1. Login");
+                System.out.println("2. Registrarse");
+                System.out.println("0. Salir");
+                System.out.print("Seleccione opcion: ");
+                
+                String opcion = scanner.nextLine().trim();
+                
+                switch (opcion) {
+                    case "1":
+                        jugadorLogeado = mostrarLogin(jugadorController, scanner);
+                        if (jugadorLogeado != null) {
+                            salir = true;
+                            VistaConsola vista = new VistaConsola(jugadorController, partidoController, jugadorLogeado);
+                            vista.mostrarMenuPrincipal();
+                        }
+                        break;
+                    case "2":
+                        mostrarRegistroNuevo(jugadorController, strategyPush, scanner);
+                        break;
+                    case "0":
+                        System.out.println("Hasta luego!");
+                        salir = true;
+                        break;
+                    default:
+                        System.out.println("Opcion invalida.");
+                }
+            }
+        } finally {
+            scanner.close();
+        }
+    }
+
+    private static Jugador mostrarLogin(JugadorController jugadorController, Scanner scanner) {
+        int intentos = 3;
+        
+        while (intentos > 0) {
+            System.out.println("\n========================================");
+            System.out.println("   LOGIN - SISTEMA DE ENCUENTROS");
+            System.out.println("========================================");
+            System.out.print("Username: ");
+            String username = scanner.nextLine().trim();
+            System.out.print("Password: ");
+            String password = scanner.nextLine().trim();
+            
+            Jugador jugador = jugadorController.autenticarJugador(username, password);
+            if (jugador != null) {
+                System.out.println("\nBienvenido, " + jugador.getNombre() + "!");
+                return jugador;
+            } else {
+                intentos--;
+                if (intentos > 0) {
+                    System.out.println("Usuario o contraseña incorrectos. Intentos restantes: " + intentos);
+                } else {
+                    System.out.println("Demasiados intentos fallidos. Acceso denegado.");
+                }
+            }
+        }
+        return null;
+    }
+
+    private static void mostrarRegistroNuevo(JugadorController jugadorController, IStrategyNotificador strategyPush, Scanner scanner) {
+        
+        System.out.println("\n========================================");
+        System.out.println("   REGISTRARSE - SISTEMA DE ENCUENTROS");
+        System.out.println("========================================");
+        System.out.print("Nombre completo: ");
+        String nombre = scanner.nextLine().trim();
+        
+        System.out.print("Email: ");
+        String email = scanner.nextLine().trim();
+        
+        System.out.print("Username: ");
+        String username = scanner.nextLine().trim();
+        
+        // Verificar que el username no exista
+        if (jugadorController.buscarJugadorPorUsername(username) != null) {
+            System.out.println("El username ya existe. Intente otro.");
+            return;
+        }
+        
+        System.out.print("Password: ");
+        String password = scanner.nextLine().trim();
+        
+        System.out.print("Codigo postal: ");
+        String codigoPostal = scanner.nextLine().trim();
+        
+        System.out.println("Deporte favorito:");
+        System.out.println("1. Futbol");
+        System.out.println("2. Basquet");
+        System.out.println("3. Voley");
+        System.out.print("Seleccione: ");
+        String deporteOpcion = scanner.nextLine().trim();
+        
+        AbstractDeporte deporte;
+        switch (deporteOpcion) {
+            case "1":
+                deporte = new Futbol();
+                break;
+            case "2":
+                deporte = new Basquet();
+                break;
+            case "3":
+                deporte = new Voley();
+                break;
+            default:
+                System.out.println("Deporte invalido. Se asignara Futbol por defecto.");
+                deporte = new Futbol();
+        }
+        
+        Jugador nuevoJugador = jugadorController.registrarJugador(nombre, email, username, password, deporte, codigoPostal);
+        jugadorController.setNotificadorJugador(nuevoJugador, strategyPush);
+        
+        System.out.println("\n¡Jugador registrado exitosamente!");
+        System.out.println("Datos: " + nuevoJugador);
     }
 }
