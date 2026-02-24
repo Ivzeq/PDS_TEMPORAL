@@ -39,6 +39,7 @@ public class VistaConsola {
             System.out.println("6. Ver partidos");
             System.out.println("7. Modificar datos de jugador");
             System.out.println("8. Cambiar modo de busqueda de partidos");
+            System.out.println("9. Confirmar asistencia a partido");
             System.out.println("0. Salir");
             System.out.println("========================================");
             System.out.print("Seleccione una opcion: ");
@@ -69,6 +70,9 @@ public class VistaConsola {
                         break;
                     case "8":
                         mostrarCambiarBusqueda();
+                        break;
+                    case "9":
+                        mostrarConfirmarAsistencia();
                         break;
                     case "0":
                         salir = true;
@@ -107,10 +111,18 @@ public class VistaConsola {
             System.out.print("Seleccione: ");
             String deporteOpcion = leerEntrada();
             switch (deporteOpcion) {
-                case "1": deporte = new Futbol(); break;
-                case "2": deporte = new Basquet(); break;
-                case "3": deporte = new Voley(); break;
-                default: mostrarMensaje("Debe seleccionar un deporte."); break;
+                case "1":
+                    deporte = new Futbol();
+                    break;
+                case "2":
+                    deporte = new Basquet();
+                    break;
+                case "3":
+                    deporte = new Voley();
+                    break;
+                default:
+                    mostrarMensaje("Debe seleccionar un deporte.");
+                    break;
             }
         }
 
@@ -160,9 +172,15 @@ public class VistaConsola {
 
         AbstractDeporte deporte;
         switch (deporteOpcion) {
-            case "1": deporte = new Futbol(); break;
-            case "2": deporte = new Basquet(); break;
-            case "3": deporte = new Voley(); break;
+            case "1":
+                deporte = new Futbol();
+                break;
+            case "2":
+                deporte = new Basquet();
+                break;
+            case "3":
+                deporte = new Voley();
+                break;
             default:
                 mostrarMensaje("Opcion invalida.");
                 return;
@@ -190,7 +208,8 @@ public class VistaConsola {
             horario = new Date();
         }
 
-        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal, horario, organizador);
+        Partido partido = partidoController.crearPartido(deporte, nJugadores, null, duracion, ubicacion, codigoPostal,
+                horario, organizador);
         mostrarMensaje("Partido creado! Deporte: " + partido.getDeporte()
                 + " | Horario: " + sdf.format(partido.getHorario())
                 + " | Estado: " + partido.getEstado());
@@ -243,7 +262,8 @@ public class VistaConsola {
                 sb.append(" en ").append(p.getUbicacion());
                 String horarioStr = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
                 sb.append(" | ").append(horarioStr);
-                sb.append(" (").append(p.getJugadores().size()).append("/").append(p.getNJugadores()).append(" jugadores)");
+                sb.append(" (").append(p.getJugadores().size()).append("/").append(p.getNJugadores())
+                        .append(" jugadores)");
                 sb.append(" | Organizador: ").append(p.getOrganizador().getUsername());
 
                 switch (strategyActual) {
@@ -255,7 +275,8 @@ public class VistaConsola {
                         break;
                     case "PorNivel":
                         String nivelPartido = p.getNivelJugadores() != null
-                                ? p.getNivelJugadores().toString() : "Sin restriccion";
+                                ? p.getNivelJugadores().toString()
+                                : "Sin restriccion";
                         sb.append(" | Nivel requerido: ").append(nivelPartido);
                         break;
                 }
@@ -329,9 +350,15 @@ public class VistaConsola {
                 String dep = leerEntrada();
                 AbstractDeporte nuevoDeporte = null;
                 switch (dep) {
-                    case "1": nuevoDeporte = new Futbol(); break;
-                    case "2": nuevoDeporte = new Basquet(); break;
-                    case "3": nuevoDeporte = new Voley(); break;
+                    case "1":
+                        nuevoDeporte = new Futbol();
+                        break;
+                    case "2":
+                        nuevoDeporte = new Basquet();
+                        break;
+                    case "3":
+                        nuevoDeporte = new Voley();
+                        break;
                 }
                 if (nuevoDeporte != null) {
                     jugadorController.setDeporteFavoritoJugador(jugador, nuevoDeporte);
@@ -472,7 +499,8 @@ public class VistaConsola {
                     partidoController.cancelarPartido(partido);
                     mostrarMensaje("Partido cancelado.");
                 } else {
-                    mostrarMensaje("Solo el organizador (" + partido.getOrganizador().getUsername() + ") puede cancelar el partido.");
+                    mostrarMensaje("Solo el organizador (" + partido.getOrganizador().getUsername()
+                            + ") puede cancelar el partido.");
                 }
                 break;
             default:
@@ -492,6 +520,89 @@ public class VistaConsola {
         }
     }
 
+    private void mostrarConfirmarAsistencia() {
+        System.out.println("\n--- Confirmar Asistencia a Partido ---");
+
+        List<Jugador> jugadores = jugadorController.getJugadores();
+        if (jugadores.isEmpty()) {
+            mostrarMensaje("No hay jugadores registrados.");
+            return;
+        }
+
+        System.out.println("Quien eres?");
+        for (int i = 0; i < jugadores.size(); i++) {
+            System.out.println((i + 1) + ". " + jugadores.get(i).getUsername());
+        }
+        System.out.print("Seleccione jugador: ");
+        int jIndex = Integer.parseInt(leerEntrada()) - 1;
+        if (jIndex < 0 || jIndex >= jugadores.size()) {
+            mostrarMensaje("Seleccion invalida.");
+            return;
+        }
+        Jugador jugador = jugadores.get(jIndex);
+
+        List<Partido> partidosPendientes = new java.util.ArrayList<>();
+        for (Partido p : partidoController.getPartidos()) {
+            if (p.getEstado() instanceof PartidoArmado
+                    && p.getJugadores().contains(jugador)
+                    && !p.isConfirmado(jugador)) {
+                partidosPendientes.add(p);
+            }
+        }
+
+        if (partidosPendientes.isEmpty()) {
+            mostrarMensaje("No tienes partidos pendientes de confirmacion.");
+            return;
+        }
+
+        System.out.println("Partidos esperando tu confirmacion:");
+        for (int i = 0; i < partidosPendientes.size(); i++) {
+            Partido p = partidosPendientes.get(i);
+            String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+            System.out.println("  " + (i + 1) + ". " + p.getDeporte()
+                    + " en " + p.getUbicacion()
+                    + " | " + horario
+                    + " | Confirmados: " + p.getJugadoresConfirmados().size() + "/" + p.getNJugadores()
+                    + " | Organizador: " + p.getOrganizador().getUsername());
+        }
+        System.out.print("Seleccione partido: ");
+        int pIndex = Integer.parseInt(leerEntrada()) - 1;
+        if (pIndex < 0 || pIndex >= partidosPendientes.size()) {
+            mostrarMensaje("Seleccion invalida.");
+            return;
+        }
+
+        Partido partido = partidosPendientes.get(pIndex);
+
+        System.out.println("1. Confirmar asistencia");
+        System.out.println("2. No puedo asistir (seras removido del partido)");
+        System.out.print("Seleccione: ");
+        String opcion = leerEntrada();
+
+        switch (opcion) {
+            case "1":
+                boolean ok = partidoController.confirmarAsistencia(partido, jugador);
+                if (ok) {
+                    mostrarMensaje("Asistencia confirmada!");
+                    if (partido.todosConfirmados()) {
+                        mostrarMensaje("Todos los jugadores confirmaron. El partido esta confirmado!");
+                    } else {
+                        mostrarMensaje("Confirmados: " + partido.getJugadoresConfirmados().size()
+                                + "/" + partido.getNJugadores());
+                    }
+                } else {
+                    mostrarMensaje("No se pudo confirmar.");
+                }
+                break;
+            case "2":
+                partidoController.rechazarAsistencia(partido, jugador);
+                mostrarMensaje("Fuiste removido del partido. El partido vuelve a buscar jugadores.");
+                break;
+            default:
+                mostrarMensaje("Opcion no valida.");
+        }
+    }
+
     private void mostrarPartidos() {
         System.out.println("\n--- Partidos ---");
         List<Partido> partidos = partidoController.getPartidos();
@@ -502,12 +613,17 @@ public class VistaConsola {
         for (int i = 0; i < partidos.size(); i++) {
             Partido p = partidos.get(i);
             String horario = p.getHorario() != null ? sdf.format(p.getHorario()) : "Sin definir";
+            String confirmInfo = "";
+            if (p.getEstado() instanceof PartidoArmado) {
+                confirmInfo = " | Confirmados: " + p.getJugadoresConfirmados().size() + "/" + p.getNJugadores();
+            }
             System.out.println("  " + (i + 1) + ". " + p.getDeporte()
                     + " | Ubicacion: " + p.getUbicacion()
                     + " | Horario: " + horario
                     + " | Duracion: " + p.getDuracion() + " min"
                     + " | Estado: " + p.getEstado().getClass().getSimpleName()
                     + " | Jugadores: " + p.getJugadores().size() + "/" + p.getNJugadores()
+                    + confirmInfo
                     + " | Organizador: " + p.getOrganizador().getUsername());
         }
 
@@ -522,11 +638,16 @@ public class VistaConsola {
                 Partido p = partidos.get(index);
                 System.out.println("\n--- Jugadores en " + p.getDeporte() + " - " + p.getUbicacion() + " ---");
                 List<Jugador> jugadores = p.getJugadores();
+                boolean mostrarConfirmacion = p.getEstado() instanceof PartidoArmado
+                        || p.getEstado() instanceof Confirmado;
                 for (int i = 0; i < jugadores.size(); i++) {
                     Jugador j = jugadores.get(i);
                     String rol = j.equals(p.getOrganizador()) ? " (organizador)" : "";
+                    String conf = mostrarConfirmacion
+                            ? (p.isConfirmado(j) ? " [Confirmado]" : " [Pendiente]")
+                            : "";
                     System.out.println("  " + (i + 1) + ". " + j.getUsername()
-                            + " - " + j.getNombre() + rol);
+                            + " - " + j.getNombre() + rol + conf);
                 }
             }
         }

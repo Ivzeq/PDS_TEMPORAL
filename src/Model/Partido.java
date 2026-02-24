@@ -2,7 +2,9 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Partido {
 
@@ -17,10 +19,12 @@ public class Partido {
     private List<Jugador> jugadores;
     private Jugador organizador;
     private List<IObserverPartido> observers;
+    private Set<Jugador> jugadoresConfirmados;
 
     public Partido() {
         this.jugadores = new ArrayList<>();
         this.observers = new ArrayList<>();
+        this.jugadoresConfirmados = new HashSet<>();
     }
 
     public void avanzarEstado() {
@@ -44,6 +48,29 @@ public class Partido {
 
     public void removerJugador(Jugador jugador) {
         jugadores.remove(jugador);
+        jugadoresConfirmados.remove(jugador);
+    }
+
+    public boolean confirmarAsistencia(Jugador jugador) {
+        if (jugadores.contains(jugador)) {
+            jugadoresConfirmados.add(jugador);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean todosConfirmados() {
+        return !jugadores.isEmpty()
+                && jugadores.size() == nJugadores
+                && jugadoresConfirmados.containsAll(jugadores);
+    }
+
+    public boolean isConfirmado(Jugador jugador) {
+        return jugadoresConfirmados.contains(jugador);
+    }
+
+    public Set<Jugador> getJugadoresConfirmados() {
+        return jugadoresConfirmados;
     }
 
     private void notificarObservers() {

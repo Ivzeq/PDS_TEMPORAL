@@ -28,15 +28,12 @@ public class Main {
             System.err.println("No se encontro config.properties. Los emails no se enviaran.");
         }
 
-        NotificacionController notificacionController = new NotificacionController();
-
         IAdapterFirebase adapterFirebase = new Firebase();
         IStrategyNotificador strategyPush = new Push(adapterFirebase);
-        Notificador notificadorDefault = new Notificador(strategyPush);
-        notificacionController.agregarNotificador(notificadorDefault);
 
-        JugadorController jugadorController = new JugadorController(notificacionController);
+        JugadorController jugadorController = new JugadorController();
         BuscadorPartidos buscadorPartidos = new BuscadorPartidos();
+        NotificacionController notificacionController = new NotificacionController();
         PartidoController partidoController = new PartidoController(buscadorPartidos, notificacionController);
 
         // --- Jugadores ---
