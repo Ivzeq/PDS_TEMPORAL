@@ -57,6 +57,30 @@ public class PartidoController {
         }
     }
 
+    public boolean confirmarAsistencia(Partido partido, Jugador jugador) {
+        boolean ok = partido.confirmarAsistencia(jugador);
+        if (ok) {
+            notificacionController.notificarTodos(partido,
+                    jugador.getUsername() + " confirmo asistencia al partido de " + partido.getDeporte() + ".");
+            if (partido.todosConfirmados() && partido.getEstado() instanceof PartidoArmado) {
+                partido.setEstado(new Confirmado());
+                notificacionController.notificarTodos(partido,
+                        "Todos confirmaron! El partido de " + partido.getDeporte() + " esta confirmado.");
+            }
+        }
+        return ok;
+    }
+
+    public void rechazarAsistencia(Partido partido, Jugador jugador) {
+        partido.removerJugador(jugador);
+        partido.setEstado(new NecesitamosJugadores());
+        notificacionController.notificarTodos(partido,
+                jugador.getUsername() + " no podra asistir al partido de " + partido.getDeporte()
+                        + ". Se buscan jugadores nuevamente.");
+        notificacionController.notificarJugador(jugador,
+                "Fuiste removido del partido de " + partido.getDeporte() + " por no confirmar asistencia.");
+    }
+
     public void cancelarPartido(Partido partido) {
         partido.setEstado(new Cancelado());
         notificacionController.notificarTodos(partido,
@@ -90,7 +114,15 @@ public class PartidoController {
         for (Partido p : partidos) {
             if (p.getHorario() == null) continue;
 
-            if (p.getEstado() instanceof Confirmado && !ahora.before(p.getHorario())) {
+            if (p.getEstado() instanceof PartidoArmado && !p.todosConfirmados()) {
+                long unaHoraAntes = p.getHorario().getTime() - (60 * 60 * 1000);
+                if (ahora.getTime() >= unaHoraAntes) {
+                    p.setEstado(new Cancelado());
+                    notificacionController.notificarTodos(p,
+                            "El partido de " + p.getDeporte() + " en " + p.getUbicacion()
+                                    + " fue cancelado: no todos confirmaron asistencia a menos de 1 hora del inicio.");
+                }
+            } else if (p.getEstado() instanceof Confirmado && !ahora.before(p.getHorario())) {
                 p.setEstado(new EnJuego());
                 notificacionController.notificarTodos(p,
                         "El partido de " + p.getDeporte() + " en " + p.getUbicacion() + " ha comenzado!");

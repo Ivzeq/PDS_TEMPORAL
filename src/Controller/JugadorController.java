@@ -11,11 +11,9 @@ import java.util.List;
 public class JugadorController {
 
     private List<Jugador> jugadores;
-    private NotificacionController notificacionController;
 
-    public JugadorController(NotificacionController notificacionController) {
+    public JugadorController() {
         this.jugadores = new ArrayList<>();
-        this.notificacionController = notificacionController;
     }
 
     public Jugador registrarJugador(String nombre, String mail, String username,

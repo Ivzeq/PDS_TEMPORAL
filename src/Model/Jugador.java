@@ -16,7 +16,7 @@ public class Jugador {
     private Notificador notificador;
 
     public Jugador(String nombre, String mail, String username, String password,
-                   AbstractDeporte deporteFavorito, String codigoPostal) {
+            AbstractDeporte deporteFavorito, String codigoPostal) {
         this.id = String.valueOf(nextId++);
         this.nombre = nombre;
         this.mail = mail;
@@ -109,7 +109,8 @@ public class Jugador {
                 ", deporteFavorito=" + deporteFavorito +
                 ", nivel=" + nivelDeporteFavorito +
                 ", nPartidos=" + nPartidos +
-                ", notificacion=" + (notificador != null ? notificador.getStrategy().getClass().getSimpleName() : "N/A") +
+                ", notificacion=" + (notificador != null ? notificador.getStrategy().getClass().getSimpleName() : "N/A")
+                +
                 '}';
     }
 }

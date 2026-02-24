@@ -4,7 +4,14 @@ public class PartidoArmado implements IEstadoPartido {
 
     @Override
     public void avanzarEstado(Partido partido) {
-        partido.setEstado(new Confirmado());
+        if (partido.todosConfirmados()) {
+            partido.setEstado(new Confirmado());
+        } else {
+            int confirmados = partido.getJugadoresConfirmados().size();
+            int total = partido.getNJugadores();
+            System.out.println("No se puede avanzar: no todos confirmaron asistencia ("
+                    + confirmados + "/" + total + " confirmados).");
+        }
     }
 
     @Override
