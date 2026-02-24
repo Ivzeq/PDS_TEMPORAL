@@ -29,7 +29,6 @@ public class PartidoController {
         partido.setCodigoPostal(codigoPostal);
         partido.setHorario(horario);
         partido.setOrganizador(organizador);
-        partido.setEstado(new NecesitamosJugadores());
         partido.agregarJugador(organizador);
         partidos.add(partido);
         return partido;

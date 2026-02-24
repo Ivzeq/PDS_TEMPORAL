@@ -25,6 +25,7 @@ public class Partido {
         this.jugadores = new ArrayList<>();
         this.observers = new ArrayList<>();
         this.jugadoresConfirmados = new HashSet<>();
+        this.estado = new NecesitamosJugadores();
     }
 
     public void avanzarEstado() {
